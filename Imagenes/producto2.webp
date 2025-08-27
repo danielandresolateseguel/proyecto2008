@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <!-- Laptop Background -->
+  <rect width="800" height="600" fill="#f5f5f5"/>
+  
+  <!-- Laptop Base -->
+  <rect x="200" y="400" width="400" height="30" rx="5" fill="#333" stroke="#222" stroke-width="2"/>
+  
+  <!-- Laptop Screen -->
+  <rect x="220" y="200" width="360" height="200" rx="5" fill="#333" stroke="#222" stroke-width="2"/>
+  
+  <!-- Screen Display -->
+  <rect x="230" y="210" width="340" height="180" rx="2" fill="#4a6fa5"/>
+  
+  <!-- Keyboard -->
+  <rect x="230" y="405" width="340" height="5" fill="#444"/>
+  
+  <!-- Trackpad -->
+  <rect x="320" y="415" width="160" height="10" rx="5" fill="#444"/>
+  
+  <!-- Screen Content -->
+  <rect x="250" y="230" width="300" height="20" rx="2" fill="#fff" opacity="0.7"/>
+  <rect x="250" y="260" width="200" height="20" rx="2" fill="#fff" opacity="0.5"/>
+  <rect x="250" y="290" width="250" height="20" rx="2" fill="#fff" opacity="0.6"/>
+  <rect x="250" y="320" width="150" height="20" rx="2" fill="#fff" opacity="0.4"/>
+  <rect x="250" y="350" width="280" height="20" rx="2" fill="#fff" opacity="0.5"/>
+  
+  <!-- Text -->
+  <text x="400" y="500" font-family="Arial" font-size="24" fill="#333" text-anchor="middle">Laptop Pro</text>
+</svg>

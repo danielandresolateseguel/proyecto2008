@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador Web con Carrito</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="image-optimizations.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preload" as="image" href="Imagenes/asus-proart-p16">
+    <link rel="preload" as="image" href="Imagenes/producto2.webp">
+    <link rel="preload" as="image" href="Imagenes/producto3.webp">
+</head>
+<body>
+    <header>
+        <h1>Mi Tienda Online</h1>
+        <div class="header-container">
+            <div class="search-container">
+                <form id="search-form">
+                    <input type="text" id="search-input" placeholder="Buscar en el sitio..." autocomplete="off">
+                    <button type="submit">Buscar</button>
+                </form>
+            </div>
+            <div class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Carrito de compras (oculto por defecto) -->
+        <div id="shopping-cart" class="shopping-cart">
+            <div class="cart-header">
+                <h2>Carrito de Compras</h2>
+                <button id="close-cart" class="close-cart"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="cart-items" class="cart-items">
+                <!-- Los items del carrito se mostrarán aquí -->
+                <p class="empty-cart">Tu carrito está vacío</p>
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cart-total-price">$0.00</span>
+                </div>
+                <button id="checkout-btn" class="checkout-btn">Proceder al pago</button>
+                <button id="clear-cart-btn" class="clear-cart-btn">Vaciar carrito</button>
+            </div>
+        </div>
+
+        <section class="search-results">
+            <h2>Resultados de búsqueda</h2>
+            <div id="results-container">
+                <!-- Los resultados de búsqueda se mostrarán aquí -->
+                <p class="no-results">Realiza una búsqueda para ver resultados</p>
+            </div>
+        </section>
+
+        <section class="products searchable-section">
+            <h2>Nuestros Productos</h2>
+            <div class="products-grid">
+                <!-- Producto 1 -->
+                <div class="product-card searchable-item" id="producto1">
+                    <div class="product-image">
+                        <img src="Imagenes/asus-proart-p16.png" alt="Smartphone XYZ" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Smartphone XYZ</h3>
+                        <p class="product-description">Smartphone de última generación con pantalla AMOLED de 6.5", cámara de 108MP y batería de 5000mAh.</p>
+                        <p class="product-price">$599.99</p>
+                        <button class="add-to-cart-btn" data-id="1" data-name="Smartphone XYZ" data-price="599.99">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Producto 2 -->
+                <div class="product-card searchable-item" id="producto2">
+                    <div class="product-image">
+                        <img src="Imagenes/asus-proart-p16.png" alt="Laptop Pro" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Laptop Pro</h3>
+                        <p class="product-description">Laptop ultradelgada con procesador de última generación, 16GB de RAM y 512GB SSD.</p>
+                        <p class="product-price">$1299.99</p>
+                        <button class="add-to-cart-btn" data-id="2" data-name="Laptop Pro" data-price="1299.99">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Producto 3 -->
+                <div class="product-card searchable-item" id="producto3">
+                    <div class="product-image">
+                        <img src="Imagenes/asus-proart-p16.png" alt="Auriculares Inalámbricos" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Auriculares Inalámbricos</h3>
+                        <p class="product-description">Auriculares con cancelación de ruido, 30 horas de batería y sonido de alta fidelidad.</p>
+                        <p class="product-price">$149.99</p>
+                        <button class="add-to-cart-btn" data-id="3" data-name="Auriculares Inalámbricos" data-price="149.99">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Producto 4 -->
+                <div class="product-card searchable-item" id="producto4">
+                    <div class="product-image">
+                        <img src="Imagenes/Xbox-01-copia-1024x1024.png" alt="Smartwatch Fitness">
+                    </div>
+                    <div class="product-info">
+                        <h3>Smartwatch Fitness</h3>
+                        <p class="product-description">Reloj inteligente con monitor de ritmo cardíaco, GPS y más de 20 modos deportivos.</p>
+                        <p class="product-price">$199.99</p>
+                        <button class="add-to-cart-btn" data-id="4" data-name="Smartwatch Fitness" data-price="199.99">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Producto 5 -->
+                <div class="product-card searchable-item" id="producto5">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200" alt="Tablet Ultra">
+                    </div>
+                    <div class="product-info">
+                        <h3>Tablet Ultra</h3>
+                        <p class="product-description">Tablet con pantalla de 10.5", procesador octa-core y 128GB de almacenamiento.</p>
+                        <p class="product-price">$349.99</p>
+                        <button class="add-to-cart-btn" data-id="5" data-name="Tablet Ultra" data-price="349.99">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Producto 6 -->
+                <div class="product-card searchable-item" id="producto6">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200" alt="Cámara DSLR">
+                    </div>
+                    <div class="product-info">
+                        <h3>Cámara DSLR</h3>
+                        <p class="product-description">Cámara profesional con sensor de 24MP, grabación 4K y conectividad WiFi.</p>
+                        <p class="product-price">$799.99</p>
+                        <button class="add-to-cart-btn" data-id="6" data-name="Cámara DSLR" data-price="799.99">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Producto 7 -->
+                <div class="product-card searchable-item" id="producto7">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200" alt="Altavoz Bluetooth">
+                    </div>
+                    <div class="product-info">
+                        <h3>Altavoz Bluetooth</h3>
+                        <p class="product-description">Altavoz portátil resistente al agua con 20 horas de batería y sonido 360°.</p>
+                        <p class="product-price">$89.99</p>
+                        <button class="add-to-cart-btn" data-id="7" data-name="Altavoz Bluetooth" data-price="89.99">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Producto 8 -->
+                <div class="product-card searchable-item" id="producto8">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200" alt="Monitor Curvo">
+                    </div>
+                    <div class="product-info">
+                        <h3>Monitor Curvo</h3>
+                        <p class="product-description">Monitor gaming de 32" con tasa de refresco de 144Hz y resolución 2K.</p>
+                        <p class="product-price">$399.99</p>
+                        <button class="add-to-cart-btn" data-id="8" data-name="Monitor Curvo" data-price="399.99">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Producto 9 -->
+                <div class="product-card searchable-item" id="producto9">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200" alt="Teclado Mecánico">
+                    </div>
+                    <div class="product-info">
+                        <h3>Teclado Mecánico</h3>
+                        <p class="product-description">Teclado gaming con switches mecánicos, retroiluminación RGB y teclas programables.</p>
+                        <p class="product-price">$129.99</p>
+                        <button class="add-to-cart-btn" data-id="9" data-name="Teclado Mecánico" data-price="129.99">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Producto 10 -->
+                <div class="product-card searchable-item" id="producto10">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200" alt="Drone 4K">
+                    </div>
+                    <div class="product-info">
+                        <h3>Drone 4K</h3>
+                        <p class="product-description">Drone con cámara 4K, 30 minutos de vuelo y sistema de estabilización avanzado.</p>
+                        <p class="product-price">$699.99</p>
+                        <button class="add-to-cart-btn" data-id="10" data-name="Drone 4K" data-price="699.99">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content searchable-section">
+            <h2>Información de la Tienda</h2>
+            <div class="content-items">
+                <article id="articulo1" class="searchable-item">
+                    <h3>Sobre Nosotros</h3>
+                    <p>Somos una tienda especializada en productos electrónicos de alta calidad. Ofrecemos las últimas novedades tecnológicas a precios competitivos.</p>
+                    <p>Nuestro compromiso es brindar la mejor experiencia de compra a nuestros clientes.</p>
+                </article>
+
+                <article id="articulo2" class="searchable-item">
+                    <h3>Política de Envíos</h3>
+                    <p>Realizamos envíos a todo el país. Los pedidos se procesan en 24-48 horas y el tiempo de entrega depende de tu ubicación.</p>
+                    <p>Ofrecemos envío gratuito en compras superiores a $100.</p>
+                </article>
+
+                <article id="articulo3" class="searchable-item">
+                    <h3>Garantía y Devoluciones</h3>
+                    <p>Todos nuestros productos cuentan con garantía oficial del fabricante. Aceptamos devoluciones dentro de los 30 días posteriores a la compra.</p>
+                    <p>Para iniciar un proceso de devolución, contacta con nuestro servicio de atención al cliente.</p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Mi Tienda Online. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="scrip.js"></script>
+    <script src="image-loader.js"></script>
+</body>
+</html>
