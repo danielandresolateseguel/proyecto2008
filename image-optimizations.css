@@ -1,0 +1,44 @@
+/* Estilos para optimización de imágenes */
+.product-image img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease, opacity 0.5s ease;
+    width: 100%;
+    aspect-ratio: 3/2;
+    object-fit: contain;
+    opacity: 1;
+}
+
+/* Animación para imágenes cargadas */
+.product-image img.loaded,
+.product-image img[data-loaded="true"] {
+    opacity: 1;
+}
+
+/* Soporte para diferentes densidades de píxeles */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Estilos para pantallas de alta densidad */
+    .product-image img {
+        image-rendering: -webkit-optimize-contrast;
+    }
+}
+
+/* Estilos para imágenes de fondo responsivas */
+.bg-image {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Efecto de zoom suave al pasar el cursor */
+.product-image:hover img {
+    transform: scale(1.05);
+}
+
+/* Contenedor de imagen con proporción fija */
+.product-image {
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
