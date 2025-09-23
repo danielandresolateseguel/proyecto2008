@@ -114,6 +114,17 @@
                     <i class="fas fa-chevron-right"></i>
                 </button>
                 
+                <!-- Indicadores de puntos -->
+                <div class="carousel-indicators">
+                    <button class="indicator active" onclick="goToSlide(0)" aria-label="Ir al slide 1"></button>
+                    <button class="indicator" onclick="goToSlide(1)" aria-label="Ir al slide 2"></button>
+                    <button class="indicator" onclick="goToSlide(2)" aria-label="Ir al slide 3"></button>
+                </div>
+                
+                <!-- Control de auto-play -->
+                <button class="carousel-play-pause" onclick="toggleAutoPlay()" aria-label="Pausar/Reproducir carrusel">
+                    <i class="fas fa-pause" id="play-pause-icon"></i>
+                </button>
 
             </div>
         </section>

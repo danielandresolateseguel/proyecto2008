@@ -995,6 +995,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentSlideIndex = 0;
     let carouselInterval;
     let isDragging = false;
+    let isAutoPlayActive = true;
     
     // Funciones del carrusel
     function initializeCarousel() {
@@ -1067,6 +1068,10 @@ document.addEventListener('DOMContentLoaded', function() {
             stopCarouselInterval();
             // Eliminar completamente las transiciones durante gestos táctiles
             slidesContainer.style.transition = 'none';
+            
+            // Feedback visual: reducir ligeramente la escala del carrusel
+            carouselContainer.style.transform = 'scale(0.98)';
+            carouselContainer.style.transition = 'transform 0.2s ease';
         }, { passive: true });
         
         carouselContainer.addEventListener('touchmove', (e) => {
@@ -1082,6 +1087,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const newTransform = startTransform + dragPercentage;
             slidesContainer.style.transition = 'none'; // Sin transición durante el arrastre
             slidesContainer.style.transform = `translateX(${newTransform}%)`;
+            
+            // Feedback visual adicional: cambiar opacidad basado en la distancia del arrastre
+            const dragIntensity = Math.min(Math.abs(deltaX) / containerWidth, 0.3);
+            carouselContainer.style.filter = `brightness(${1 - dragIntensity * 0.2})`;
         }, { passive: true });
         
         carouselContainer.addEventListener('touchend', (e) => {
@@ -1094,6 +1103,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Restaurar transición suave
             slidesContainer.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            
+            // Restaurar efectos visuales
+            carouselContainer.style.transform = 'scale(1)';
+            carouselContainer.style.filter = 'brightness(1)';
+            carouselContainer.style.transition = 'transform 0.3s ease, filter 0.3s ease';
             
             if (Math.abs(swipeDistance) > swipeThreshold) {
                 if (swipeDistance > 0) {
@@ -1109,6 +1123,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 // Actualizar indicadores sin llamar showSlide para evitar conflictos
                 updateIndicators();
+                
+                // Feedback visual de éxito: breve pulso
+                setTimeout(() => {
+                    carouselContainer.style.transform = 'scale(1.02)';
+                    setTimeout(() => {
+                        carouselContainer.style.transform = 'scale(1)';
+                    }, 100);
+                }, 50);
             } else {
                 // Volver a la posición original si no se alcanzó el umbral
                 slidesContainer.style.transform = `translateX(-${currentSlideIndex * 33.333}%)`;
@@ -1123,6 +1145,12 @@ document.addEventListener('DOMContentLoaded', function() {
                  isDragging = false;
                  slidesContainer.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
                  slidesContainer.style.transform = `translateX(-${currentSlideIndex * 33.333}%)`;
+                 
+                 // Restaurar efectos visuales
+                 carouselContainer.style.transform = 'scale(1)';
+                 carouselContainer.style.filter = 'brightness(1)';
+                 carouselContainer.style.transition = 'transform 0.3s ease, filter 0.3s ease';
+                 
                  resetCarouselInterval();
              }
          }, { passive: true });
@@ -1197,6 +1225,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function startCarouselInterval() {
+        // Solo iniciar si el auto-play está activo
+        if (!isAutoPlayActive) return;
+        
         // Limpiar cualquier intervalo existente antes de crear uno nuevo
         if (carouselInterval) {
             clearInterval(carouselInterval);
@@ -1204,6 +1235,26 @@ document.addEventListener('DOMContentLoaded', function() {
         carouselInterval = setInterval(() => {
             nextSlide();
         }, 5000); // Cambiar slide cada 5 segundos
+    }
+    
+    function toggleAutoPlay() {
+        const playPauseIcon = document.getElementById('play-pause-icon');
+        
+        if (isAutoPlayActive) {
+            // Pausar auto-play
+            stopCarouselInterval();
+            isAutoPlayActive = false;
+            if (playPauseIcon) {
+                playPauseIcon.className = 'fas fa-play';
+            }
+        } else {
+            // Reanudar auto-play
+            isAutoPlayActive = true;
+            startCarouselInterval();
+            if (playPauseIcon) {
+                playPauseIcon.className = 'fas fa-pause';
+            }
+        }
     }
     
     function stopCarouselInterval() {
