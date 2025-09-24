@@ -1110,7 +1110,7 @@ document.addEventListener('DOMContentLoaded', function() {
             isDragging = true;
             
             // Usar directamente el índice actual para evitar inconsistencias
-            startTransform = -currentSlideIndex * 33.333;
+            startTransform = -currentSlideIndex * (100/3);
             
             stopCarouselInterval();
             // Eliminar completamente las transiciones durante gestos táctiles
@@ -1128,7 +1128,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const deltaX = touchCurrentX - touchStartX;
             const containerWidth = carouselContainer.offsetWidth;
             // Convertir el movimiento del dedo a porcentaje del contenedor de slides
-            const dragPercentage = (deltaX / containerWidth) * 33.333;
+            const dragPercentage = (deltaX / containerWidth) * (100/3);
             
             // Aplicar transformación en tiempo real siguiendo el dedo
             const newTransform = startTransform + dragPercentage;
@@ -1161,12 +1161,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Deslizamiento hacia la derecha - slide anterior
                     const newIndex = currentSlideIndex > 0 ? currentSlideIndex - 1 : 2;
                     currentSlideIndex = newIndex;
-                    slidesContainer.style.transform = `translateX(-${currentSlideIndex * 33.333}%)`;
+                    slidesContainer.style.transform = `translateX(-${currentSlideIndex * (100/3)}%)`;
                 } else {
                     // Deslizamiento hacia la izquierda - slide siguiente
                     const newIndex = currentSlideIndex < 2 ? currentSlideIndex + 1 : 0;
                     currentSlideIndex = newIndex;
-                    slidesContainer.style.transform = `translateX(-${currentSlideIndex * 33.333}%)`;
+                    slidesContainer.style.transform = `translateX(-${currentSlideIndex * (100/3)}%)`;
                 }
                 // Actualizar indicadores sin llamar showSlide para evitar conflictos
                 updateIndicators();
@@ -1180,7 +1180,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 50);
             } else {
                 // Volver a la posición original si no se alcanzó el umbral
-                slidesContainer.style.transform = `translateX(-${currentSlideIndex * 33.333}%)`;
+                slidesContainer.style.transform = `translateX(-${currentSlideIndex * (100/3)}%)`;
             }
             
             resetCarouselInterval();
@@ -1191,7 +1191,7 @@ document.addEventListener('DOMContentLoaded', function() {
              if (isDragging) {
                  isDragging = false;
                  slidesContainer.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                 slidesContainer.style.transform = `translateX(-${currentSlideIndex * 33.333}%)`;
+                 slidesContainer.style.transform = `translateX(-${currentSlideIndex * (100/3)}%)`;
                  
                  // Restaurar efectos visuales
                  carouselContainer.style.transform = 'scale(1)';
@@ -1230,7 +1230,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 slidesContainer.style.transition = 'transform 0.5s ease-in-out';
             }
             // Con 3 slides en flexbox, cada slide ocupa 33.333% del contenedor
-            slidesContainer.style.transform = `translateX(-${currentSlideIndex * 33.333}%)`;
+        slidesContainer.style.transform = `translateX(-${currentSlideIndex * (100/3)}%)`;
         }
         
         // Mostrar slide e indicador activos

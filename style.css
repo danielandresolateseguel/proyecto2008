@@ -39,13 +39,14 @@
 }
 
 .carousel-slide {
-    width: 33.333%; /* 100% / 3 slides */
+    width: calc(100% / 3); /* 100% / 3 slides */
     height: 100%;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    overflow: hidden;
 }
 
 .carousel-slide.active {
@@ -56,9 +57,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
+    display: block;
     opacity: 0.7;
     transform: scale(1.05);
     transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -73,6 +72,7 @@
     position: absolute;
     bottom: 20px;
     left: 50%;
+    right: auto;
     transform: translateX(-50%) translateY(20px);
     z-index: 2;
     text-align: center;
@@ -88,6 +88,7 @@
     transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 90%;
 }
 
 .carousel-slide.active .carousel-content {
@@ -233,7 +234,7 @@
     display: flex !important;
     flex-direction: column !important;
     gap: 10px !important;
-    z-index: 1000 !important;
+    z-index: 500 !important;
 }
 
 
@@ -1964,7 +1965,7 @@ footer {
     align-items: center;
     justify-content: center;
     font-size: 16px;
-    z-index: 1001;
+    z-index: 501;
     pointer-events: none;
     opacity: 0;
     transition: transform 0.5s ease, opacity 0.5s ease;
@@ -2154,7 +2155,7 @@ footer {
     font-weight: bold;
     color: #666;
     cursor: pointer;
-    z-index: 1001;
+    z-index: 10001;
     width: 30px;
     height: 30px;
     display: flex;
@@ -2443,7 +2444,7 @@ footer {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    z-index: 15;
+    z-index: 501;
     
     /* Tamaño base usando rem para escalabilidad */
     width: 3rem;
@@ -2536,6 +2537,7 @@ footer {
         height: 2.5rem;
         top: 0.875rem;
         right: 0.875rem;
+        z-index: 501;
     }
     
     .play-button-center i {
@@ -2550,6 +2552,7 @@ footer {
         height: 2rem;
         top: 0.75rem;
         right: 0.75rem;
+        z-index: 501;
     }
     
     .play-button-center i {
