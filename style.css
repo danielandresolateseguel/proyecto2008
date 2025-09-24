@@ -59,16 +59,24 @@
     position: absolute;
     top: 0;
     left: 0;
+    opacity: 0.7;
+    transform: scale(1.05);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.carousel-slide.active img {
+    opacity: 1;
+    transform: scale(1);
 }
 
 .carousel-content {
     position: absolute;
     bottom: 20px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(20px);
     z-index: 2;
     text-align: center;
-    color: #2196F3;
+    color: #FFD700;
     background: rgba(0, 0, 0, 0.6);
     padding: 0.8rem 2rem;
     border-radius: 25px;
@@ -76,12 +84,30 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    opacity: 0;
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.carousel-slide.active .carousel-content {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }
 
 .carousel-content h2 {
     font-size: 1.35rem;
     margin: 0;
+    color: #FFD700;
     text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 3px rgba(0, 0, 0, 0.8);
+    transform: translateY(10px);
+    opacity: 0;
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
+}
+
+.carousel-slide.active .carousel-content h2 {
+    transform: translateY(0);
+    opacity: 1;
 }
 
 .carousel-content p {
@@ -89,6 +115,14 @@
     margin: 0;
     color: white;
     text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 3px rgba(0, 0, 0, 0.8);
+    transform: translateY(10px);
+    opacity: 0;
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s;
+}
+
+.carousel-slide.active .carousel-content p {
+    transform: translateY(0);
+    opacity: 1;
 }
 
 .carousel-btn {
@@ -129,26 +163,33 @@
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 8px;
+    gap: 4px;
     z-index: 3;
 }
 
 .indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.7);
-    background: transparent;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    outline: none;
+    width: 4px !important;
+    height: 4px !important;
+    min-width: 4px !important;
+    min-height: 4px !important;
+    max-width: 4px !important;
+    max-height: 4px !important;
+    border-radius: 50% !important;
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    background: transparent !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    outline: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
 }
 
 .indicator.active {
     background: white;
     border-color: white;
     transform: scale(1.2);
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
 }
 
 .indicator:hover {
@@ -157,15 +198,50 @@
 }
 
 .indicator:focus {
-    outline: 2px solid #2196F3;
-    outline-offset: 2px;
+    outline: 1px solid #2196F3;
+    outline-offset: 1px;
 }
 
 /* Control de auto-play */
+.carousel-play-pause-container {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    z-index: 3;
+}
+
+
+
+/* Clase para texto accesible solo para lectores de pantalla */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Contenedor de controles del carrusel */
+.carousel-controls {
+    position: absolute !important;
+    top: 15px !important;
+    right: 15px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    z-index: 1000 !important;
+}
+
+
+
 .carousel-play-pause {
     position: absolute;
-    top: 15px;
-    right: 15px;
+    top: 2.5px;
+    left: 2.5px;
     background: rgba(0, 0, 0, 0.6);
     border: none;
     width: 35px;
@@ -178,7 +254,7 @@
     font-size: 0.8rem;
     color: white;
     transition: all 0.3s ease;
-    z-index: 3;
+    z-index: 2;
     outline: none;
 }
 
@@ -192,6 +268,8 @@
     outline-offset: 2px;
 }
 
+
+
 /* Responsive del carrusel */
 @media (max-width: 768px) {
     .carousel-container {
@@ -202,7 +280,7 @@
         bottom: 10px;
         left: 10px;
         right: 10px;
-        transform: none;
+        transform: translateY(20px);
         padding: 0.5rem 1rem;
         gap: 0.3rem;
         white-space: normal;
@@ -210,11 +288,31 @@
         align-items: center;
         max-width: none;
         width: calc(100% - 20px);
+        opacity: 0;
+        transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        backdrop-filter: blur(8px);
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+    }
+    
+    .carousel-slide.active .carousel-content {
+        transform: translateY(0);
+        opacity: 1;
     }
     
     .carousel-content h2 {
         font-size: 0.8rem;
         line-height: 1.2;
+        color: #FFD700;
+        transform: translateY(10px);
+        opacity: 0;
+        transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
+    }
+    
+    .carousel-slide.active .carousel-content h2 {
+        transform: translateY(0);
+        opacity: 1;
     }
     
     .carousel-content p {
@@ -223,6 +321,14 @@
         text-align: center;
         color: white;
         text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 3px rgba(0, 0, 0, 0.8);
+        transform: translateY(15px);
+        opacity: 0;
+        transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s;
+    }
+    
+    .carousel-slide.active .carousel-content p {
+        transform: translateY(0);
+        opacity: 1;
     }
     
     .carousel-btn {
@@ -245,20 +351,21 @@
     }
     
     .carousel-indicators {
-        bottom: 10px;
-        gap: 6px;
+        bottom: 8px !important;
+        gap: 3px !important;
     }
     
     .indicator {
-        width: 5px;
-        height: 5px;
-        border-width: 1px;
+        width: 3px !important;
+        height: 3px !important;
+        min-width: 3px !important;
+        min-height: 3px !important;
+        max-width: 3px !important;
+        max-height: 3px !important;
+        border: 1px solid rgba(255, 255, 255, 0.5) !important;
     }
     
-    .indicator.active {
-        transform: scale(1.1);
-        box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
-    }
+
     
     .carousel-play-pause {
         top: 10px;
@@ -269,37 +376,123 @@
     }
 }
 
+/* INDICADORES DEL CARRUSEL - TAMAÑO ESTÁNDAR Y EQUILIBRADO */
+.carousel-container .carousel-indicators .indicator,
+.carousel-container .carousel-indicators button.indicator,
+.carousel-indicators .indicator,
+.carousel-indicators button.indicator,
+button.indicator {
+    width: 10px !important;
+    height: 10px !important;
+    min-width: 10px !important;
+    min-height: 10px !important;
+    max-width: 10px !important;
+    max-height: 10px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 2px solid rgba(255, 255, 255, 0.7) !important;
+    background: transparent !important;
+    border-radius: 50% !important;
+    box-sizing: border-box !important;
+}
+
+/* Para tablets */
+@media (max-width: 768px) {
+    .carousel-container .carousel-indicators .indicator,
+    .carousel-container .carousel-indicators button.indicator,
+    .carousel-indicators .indicator,
+    .carousel-indicators button.indicator,
+    button.indicator {
+        width: 8px !important;
+        height: 8px !important;
+        min-width: 8px !important;
+        min-height: 8px !important;
+        max-width: 8px !important;
+        max-height: 8px !important;
+        border: 2px solid rgba(255, 255, 255, 0.6) !important;
+    }
+}
+
+/* Para móviles */
+@media (max-width: 480px) {
+    .carousel-container .carousel-indicators .indicator,
+    .carousel-container .carousel-indicators button.indicator,
+    .carousel-indicators .indicator,
+    .carousel-indicators button.indicator,
+    button.indicator {
+        width: 7px !important;
+        height: 7px !important;
+        min-width: 7px !important;
+        min-height: 7px !important;
+        max-width: 7px !important;
+        max-height: 7px !important;
+        border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    }
+}
+
 @media (max-width: 480px) {
     .carousel-container {
-        height: 250px;
+        height: 200px;
     }
     
     .carousel-content {
-        padding: 1rem;
+        padding: 0.4rem 0.8rem;
+        bottom: 8px;
+        transform: translateY(15px);
+        opacity: 0;
+        transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        backdrop-filter: blur(6px);
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 6px;
+    }
+    
+    .carousel-slide.active .carousel-content {
+        transform: translateY(0);
+        opacity: 1;
     }
     
     .carousel-content h2 {
-        font-size: 1.5rem;
+        font-size: 0.7rem;
+        line-height: 1.1;
+        margin-bottom: 0.2rem;
+        color: #FFD700;
+        transform: translateY(8px);
+        opacity: 0;
+        transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.15s;
+    }
+    
+    .carousel-slide.active .carousel-content h2 {
+        transform: translateY(0);
+        opacity: 1;
     }
     
     .carousel-content p {
-        font-size: 1rem;
+        font-size: 0.5rem;
+        line-height: 1.2;
+        transform: translateY(10px);
+        opacity: 0;
+        transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s;
+    }
+    
+    .carousel-slide.active .carousel-content p {
+        transform: translateY(0);
+        opacity: 1;
     }
     
     .carousel-indicators {
-        bottom: 8px;
-        gap: 4px;
+        bottom: 6px !important;
+        gap: 2px !important;
     }
     
     .indicator {
-        width: 4px;
-        height: 4px;
-        border-width: 1px;
-    }
-    
-    .indicator.active {
-        transform: scale(1.05);
-        box-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+        width: 2px !important;
+        height: 2px !important;
+        min-width: 2px !important;
+        min-height: 2px !important;
+        max-width: 2px !important;
+        max-height: 2px !important;
+        border: 1px solid rgba(255, 255, 255, 0.4) !important;
     }
     
     .carousel-play-pause {
@@ -2225,8 +2418,7 @@ footer {
     
     /* Mejorar área táctil de controles del carrusel */
     .carousel-prev,
-    .carousel-next,
-    .indicator {
+    .carousel-next {
         min-height: 48px;
         min-width: 48px;
     }
@@ -2241,5 +2433,165 @@ footer {
     .modal-content {
         -webkit-overflow-scrolling: touch;
         overflow-y: auto;
+    }
+}
+
+/* ===== INDICADOR DE PROGRESO CON SVG ===== */
+/* Contenedor del botón con indicador */
+.carousel-play-button {
+    /* Posicionamiento dentro del carrusel */
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 15;
+    
+    /* Tamaño base usando rem para escalabilidad */
+    width: 3rem;
+    height: 3rem;
+    
+    /* Centrado perfecto con flexbox */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Estilo visual */
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    
+    /* Transiciones suaves */
+    transition: all 0.3s ease;
+}
+
+.carousel-play-button:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: scale(1.05);
+}
+
+.carousel-play-button:focus {
+    outline: 0.125rem solid #00bcd4;
+    outline-offset: 0.125rem;
+}
+
+/* SVG del indicador de progreso */
+.progress-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    width: calc(100% + 0.5rem);
+    height: calc(100% + 0.5rem);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.progress-ring.active {
+    opacity: 1;
+}
+
+.progress-ring-circle {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.2);
+    stroke-width: 2;
+}
+
+.progress-ring-progress {
+    fill: none;
+    stroke: #00bcd4;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-dasharray: 0 100.53;
+    transition: none;
+}
+
+.progress-ring.active .progress-ring-progress {
+    animation: progress-animation 5s linear forwards;
+}
+
+/* Animación de relleno progresivo */
+@keyframes progress-animation {
+    0% { stroke-dasharray: 0 100.53; }
+    100% { stroke-dasharray: 100.53 0; }
+}
+
+/* Ícono del botón */
+.play-button-center {
+    position: relative;
+    z-index: 2;
+}
+
+.play-button-center i {
+    color: white;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+/* Tablets y pantallas medianas */
+@media (max-width: 768px) {
+    .carousel-play-button {
+        width: 2.5rem;
+        height: 2.5rem;
+        top: 0.875rem;
+        right: 0.875rem;
+    }
+    
+    .play-button-center i {
+        font-size: 0.875rem;
+    }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+    .carousel-play-button {
+        width: 2rem;
+        height: 2rem;
+        top: 0.75rem;
+        right: 0.75rem;
+    }
+    
+    .play-button-center i {
+        font-size: 0.75rem;
+    }
+}
+
+/* ===== INDICADORES DEL CARRUSEL - RESPONSIVE ===== */
+/* Tablets y pantallas medianas */
+@media (min-width: 769px) {
+    .carousel-indicators {
+        gap: 6px;
+        bottom: 12px;
+    }
+    
+    .indicator {
+        width: 6px;
+        height: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+    
+    .indicator.active {
+        transform: scale(1.3);
+        box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+    }
+}
+
+/* Desktop y pantallas grandes */
+@media (min-width: 1024px) {
+    .carousel-indicators {
+        gap: 8px;
+        bottom: 15px;
+    }
+    
+    .indicator {
+        width: 8px;
+        height: 8px;
+        border: 2px solid rgba(255, 255, 255, 0.7);
+    }
+    
+    .indicator.active {
+        transform: scale(1.4);
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
     }
 }

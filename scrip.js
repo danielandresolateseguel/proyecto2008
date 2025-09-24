@@ -996,6 +996,11 @@ document.addEventListener('DOMContentLoaded', function() {
     let carouselInterval;
     let isDragging = false;
     let isAutoPlayActive = true;
+    let autoPlayDuration = 5000; // 5 segundos (valor fijo)
+    let isCarouselVisible = true;
+    let wasAutoPlayActiveBeforeHidden = false;
+    let progressInterval;
+    let progressStartTime;
     
     // Funciones del carrusel
     function initializeCarousel() {
@@ -1035,9 +1040,51 @@ document.addEventListener('DOMContentLoaded', function() {
         // Auto-play del carrusel
         startCarouselInterval();
         
-        // Pausar auto-play al hacer hover
-        carouselContainer.addEventListener('mouseenter', stopCarouselInterval);
-        carouselContainer.addEventListener('mouseleave', startCarouselInterval);
+        // Pausar auto-play al hacer hover (solo si está activo)
+        carouselContainer.addEventListener('mouseenter', () => {
+            if (isAutoPlayActive) {
+                stopCarouselInterval();
+            }
+        });
+        
+        carouselContainer.addEventListener('mouseleave', () => {
+            if (isAutoPlayActive) {
+                startCarouselInterval();
+            }
+        });
+        
+        // Pausar auto-play en eventos táctiles
+        carouselContainer.addEventListener('touchstart', () => {
+            if (isAutoPlayActive) {
+                stopCarouselInterval();
+            }
+        });
+        
+        carouselContainer.addEventListener('touchend', () => {
+            if (isAutoPlayActive) {
+                // Reanudar después de un breve delay para evitar conflictos
+                setTimeout(() => {
+                    if (isAutoPlayActive) {
+                        startCarouselInterval();
+                    }
+                }, 1000);
+            }
+        });
+        
+        // Pausar auto-play cuando se hace clic en indicadores
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                if (isAutoPlayActive) {
+                    stopCarouselInterval();
+                    // Reanudar después de 3 segundos
+                    setTimeout(() => {
+                        if (isAutoPlayActive) {
+                            startCarouselInterval();
+                        }
+                    }, 3000);
+                }
+            });
+        });
         
         // Soporte para navegación con teclado
         document.addEventListener('keydown', (e) => {
@@ -1197,14 +1244,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function nextSlide() {
         showSlide(currentSlideIndex + 1);
+        if (isAutoPlayActive) {
+            startProgress();
+        }
     }
     
     function previousSlide() {
         showSlide(currentSlideIndex - 1);
+        if (isAutoPlayActive) {
+            startProgress();
+        }
     }
     
     function goToSlide(index) {
         showSlide(index);
+        if (isAutoPlayActive) {
+            startProgress();
+        }
     }
     
     function updateIndicators() {
@@ -1232,27 +1288,156 @@ document.addEventListener('DOMContentLoaded', function() {
         if (carouselInterval) {
             clearInterval(carouselInterval);
         }
+        
+        startProgress();
         carouselInterval = setInterval(() => {
             nextSlide();
-        }, 5000); // Cambiar slide cada 5 segundos
+        }, autoPlayDuration);
     }
+
+    // Funciones para el indicador de progreso SVG
+    function startProgress() {
+        const progressRing = document.querySelector('.progress-ring');
+        const progressElement = document.querySelector('.progress-ring-progress');
+        console.log('startProgress llamado, progressRing encontrado:', !!progressRing);
+        if (progressRing && progressElement) {
+            // Primero removemos la clase para detener cualquier animación
+            progressRing.classList.remove('active');
+            
+            // Resetear manualmente el stroke-dasharray al estado inicial
+            progressElement.style.strokeDasharray = '0 100.53';
+            
+            // Forzamos un reflow para asegurar que los cambios se apliquen
+            progressRing.offsetHeight;
+            
+            // Pequeño delay para asegurar el reset completo
+            setTimeout(() => {
+                // Agregamos la clase nuevamente para iniciar la animación
+                progressRing.classList.add('active');
+                console.log('Clase active agregada. Clases actuales:', progressRing.className);
+                console.log('Indicador de progreso SVG iniciado');
+            }, 10);
+        } else {
+            console.error('No se encontró el elemento .progress-ring o .progress-ring-progress');
+        }
+    }
+    
+    function stopProgress() {
+        const progressRing = document.querySelector('.progress-ring');
+        const progressElement = document.querySelector('.progress-ring-progress');
+        console.log('stopProgress llamado, progressRing encontrado:', !!progressRing);
+        if (progressRing && progressElement) {
+            progressRing.classList.remove('active');
+            // Resetear al estado inicial
+            progressElement.style.strokeDasharray = '0 100.53';
+            console.log('Clase active removida. Clases actuales:', progressRing.className);
+            console.log('Indicador de progreso SVG detenido');
+        } else {
+            console.error('No se encontró el elemento .progress-ring o .progress-ring-progress');
+        }
+    }
+    
+    function setupVisibilityObserver() {
+        const carouselContainer = document.querySelector('.carousel-container');
+        if (!carouselContainer) return;
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // El carrusel es visible
+                    isCarouselVisible = true;
+                    
+                    // Reanudar auto-play si estaba activo antes de ocultarse
+                    if (wasAutoPlayActiveBeforeHidden && !isAutoPlayActive) {
+                        isAutoPlayActive = true;
+                        startCarouselInterval();
+                        
+                        // Actualizar elementos visuales y de accesibilidad
+                        const playPauseIcon = document.getElementById('play-pause-icon');
+                        const progressContainer = document.querySelector('.carousel-play-button');
+                        const autoplayStatus = document.getElementById('autoplay-status');
+                        
+                        if (playPauseIcon) {
+                            playPauseIcon.className = 'fas fa-pause';
+                        }
+                        if (progressContainer) {
+                            progressContainer.setAttribute('aria-label', 'Pausar reproducción automática del carrusel');
+                        }
+                        if (autoplayStatus) {
+                            autoplayStatus.textContent = 'Reproducción automática activa';
+                        }
+                    }
+                } else {
+                    // El carrusel no es visible
+                    isCarouselVisible = false;
+                    
+                    // Pausar auto-play si está activo
+                    if (isAutoPlayActive) {
+                        wasAutoPlayActiveBeforeHidden = true;
+                        stopCarouselInterval();
+                        isAutoPlayActive = false;
+                        
+                        // Actualizar elementos visuales y de accesibilidad
+                        const playPauseIcon = document.getElementById('play-pause-icon');
+                        const progressContainer = document.querySelector('.carousel-play-button');
+                        const autoplayStatus = document.getElementById('autoplay-status');
+                        
+                        if (playPauseIcon) {
+                            playPauseIcon.className = 'fas fa-play';
+                        }
+                        if (progressContainer) {
+                            progressContainer.setAttribute('aria-label', 'Reanudar reproducción automática del carrusel');
+                        }
+                        if (autoplayStatus) {
+                            autoplayStatus.textContent = 'Reproducción automática pausada (carrusel no visible)';
+                        }
+                    }
+                }
+            });
+        }, {
+            threshold: 0.5, // El carrusel debe estar al menos 50% visible
+            rootMargin: '0px 0px -50px 0px' // Margen adicional para activar antes
+        });
+        
+        observer.observe(carouselContainer);
+    }
+    
+
     
     function toggleAutoPlay() {
         const playPauseIcon = document.getElementById('play-pause-icon');
+        const progressContainer = document.querySelector('.carousel-play-button');
+        const autoplayStatus = document.getElementById('autoplay-status');
         
         if (isAutoPlayActive) {
             // Pausar auto-play
             stopCarouselInterval();
             isAutoPlayActive = false;
+            
+            // Actualizar elementos visuales y de accesibilidad
             if (playPauseIcon) {
                 playPauseIcon.className = 'fas fa-play';
+            }
+            if (progressContainer) {
+                progressContainer.setAttribute('aria-label', 'Reanudar reproducción automática del carrusel');
+            }
+            if (autoplayStatus) {
+                autoplayStatus.textContent = 'Reproducción automática pausada';
             }
         } else {
             // Reanudar auto-play
             isAutoPlayActive = true;
             startCarouselInterval();
+            
+            // Actualizar elementos visuales y de accesibilidad
             if (playPauseIcon) {
                 playPauseIcon.className = 'fas fa-pause';
+            }
+            if (progressContainer) {
+                progressContainer.setAttribute('aria-label', 'Pausar reproducción automática del carrusel');
+            }
+            if (autoplayStatus) {
+                autoplayStatus.textContent = 'Reproducción automática activa';
             }
         }
     }
@@ -1262,6 +1447,7 @@ document.addEventListener('DOMContentLoaded', function() {
             clearInterval(carouselInterval);
             carouselInterval = null; // Resetear la variable
         }
+        stopProgress();
     }
     
     function resetCarouselInterval() {
@@ -1571,4 +1757,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Inicializar display de historial
     updateHistoryDisplay();
+    
+    // Configurar observer de visibilidad para el carrusel
+    setupVisibilityObserver();
+    
+    // Hacer funciones globales para acceso desde HTML
+    window.toggleAutoPlay = toggleAutoPlay;
 });

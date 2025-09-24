@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buscador Web con Carrito</title>
-    <link rel="stylesheet" href="style.css?v=24">
+    <link rel="stylesheet" href="style.css?v=51">
     <link rel="stylesheet" href="image-optimizations.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preload" as="image" href="Imagenes/asus-proart-p16.png">
@@ -84,24 +84,24 @@
             <div class="carousel-container">
                 <div class="carousel-slides">
                     <div class="carousel-slide active">
-                        <img src="Imagenes/0NvnRmTfq_720x0__1.jpg" alt="Tecnología">
+                        <img src="Imagenes/0NvnRmTfq_720x0__1.jpg" alt="Innovación que Transforma">
                         <div class="carousel-content">
-                            <h2>Tecnología</h2>
-                            <p>Descubre los últimos productos electrónicos con la mejor calidad y precios competitivos</p>
+                            <h2>Innovación que Transforma</h2>
+                            <p>Equipos de última generación que revolucionan tu experiencia digital</p>
                         </div>
                     </div>
                     <div class="carousel-slide">
-                        <img src="Imagenes/1366_2000.jpeg" alt="Ofertas">
+                        <img src="Imagenes/1366_2000.jpeg" alt="Ofertas Irresistibles">
                         <div class="carousel-content">
-                            <h2>Ofertas Especiales</h2>
-                            <p>Aprovecha nuestras promociones exclusivas en smartphones, laptops y accesorios</p>
+                            <h2>Ofertas Irresistibles</h2>
+                            <p>Descuentos exclusivos hasta 50% OFF en gaming, laptops y más</p>
                         </div>
                     </div>
                     <div class="carousel-slide">
-                        <img src="Imagenes/enviogratis-cms.gif" alt="Envío Gratis">
+                        <img src="Imagenes/enviogratis-cms.gif" alt="Envío Express Gratis">
                         <div class="carousel-content">
-                            <h2>Envío Gratuito</h2>
-                            <p>Disfruta de envío sin costo en compras superiores a $100.000 ARS</p>
+                            <h2>Envío Express Gratis</h2>
+                            <p>Recibe tus productos sin costo adicional en 24-48 horas</p>
                         </div>
                     </div>
                 </div>
@@ -122,9 +122,32 @@
                 </div>
                 
                 <!-- Control de auto-play -->
-                <button class="carousel-play-pause" onclick="toggleAutoPlay()" aria-label="Pausar/Reproducir carrusel">
-                    <i class="fas fa-pause" id="play-pause-icon"></i>
-                </button>
+                <div class="carousel-controls">
+                    <!-- Control de auto-play con indicador de progreso SVG -->
+                    <div class="carousel-play-button" 
+                         onclick="toggleAutoPlay()" 
+                         aria-label="Pausar/Reanudar reproducción automática del carrusel"
+                         role="button"
+                         tabindex="0"
+                         onkeydown="if(event.key==='Enter'||event.key===' '){toggleAutoPlay();event.preventDefault();}"
+                         title="Click para pausar/reanudar reproducción automática">
+                        <!-- Indicador de progreso SVG -->
+                        <svg class="progress-ring" viewBox="0 0 36 36">
+                            <!-- Círculo base (fondo) -->
+                            <circle class="progress-ring-circle" 
+                                    cx="18" cy="18" r="16" />
+                            <!-- Círculo de progreso -->
+                            <circle class="progress-ring-progress" 
+                                    cx="18" cy="18" r="16" />
+                        </svg>
+                        <!-- Botón central -->
+                        <div class="play-button-center">
+                            <i id="play-pause-icon" class="fas fa-pause" aria-hidden="true"></i>
+                        </div>
+                        <span class="sr-only" id="autoplay-status">Reproducción automática activa</span>
+                    </div>
+
+                </div>
 
             </div>
         </section>
@@ -364,7 +387,7 @@
         </div>
     </div>
 
-    <script src="scrip.js"></script>
+    <script src="scrip.js?v=45"></script>
     <script src="image-loader.js"></script>
 </body>
 </html>
