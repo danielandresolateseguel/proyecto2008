@@ -119,28 +119,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         function updateScrollIndicators() {
             const container = discountsContainer;
-            const isAtStart = container.scrollLeft <= 10;
-            const isAtEnd = container.scrollLeft >= container.scrollWidth - container.clientWidth - 10;
             
-            // Remover indicadores existentes
+            // Remover indicadores existentes (ya no los necesitamos)
             const existingIndicators = container.querySelectorAll('.scroll-indicator');
             existingIndicators.forEach(indicator => indicator.remove());
             
-            // Agregar indicador izquierdo
-            if (!isAtStart) {
-                const leftIndicator = document.createElement('div');
-                leftIndicator.className = 'scroll-indicator scroll-left';
-                leftIndicator.innerHTML = '‹';
-                container.appendChild(leftIndicator);
-            }
-            
-            // Agregar indicador derecho
-            if (!isAtEnd) {
-                const rightIndicator = document.createElement('div');
-                rightIndicator.className = 'scroll-indicator scroll-right';
-                rightIndicator.innerHTML = '›';
-                container.appendChild(rightIndicator);
-            }
+            // Ya no agregamos indicadores de texto que causan problemas
+            // Los botones de navegación ya proporcionan la funcionalidad necesaria
         }
     }
     

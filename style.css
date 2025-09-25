@@ -1762,8 +1762,8 @@ section h2 {
 
 /* Sección de descuentos especiales */
 .special-discounts {
-    margin: 10px 0;
-    padding: 10px;
+    margin: 20px 0 20px 0;
+    padding: 10px 10px 10px 10px;
     position: relative;
     background: linear-gradient(to bottom, 
         rgba(255, 165, 0, 0) 0%,           /* Transparente al inicio */
@@ -1885,6 +1885,10 @@ section h2 {
     font-size: 18px;
     color: #333;
     transition: color 0.3s ease;
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", "Font Awesome 5 Free", "Font Awesome 5 Pro", sans-serif;
+    font-weight: 900;
+    display: inline-block;
+    line-height: 1;
 }
 
 .discounts-nav-btn:hover i {
@@ -1913,6 +1917,71 @@ section h2 {
 
 .discounts-nav-btn:disabled i {
     color: #ccc;
+}
+
+/* Solución simple: mostrar texto directo en los botones */
+.discounts-nav-btn.prev::after {
+    content: "‹" !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
+    display: inline-block !important;
+    color: #333 !important;
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    transition: color 0.3s ease !important;
+}
+
+.discounts-nav-btn.next::after {
+    content: "›" !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
+    display: inline-block !important;
+    color: #333 !important;
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    transition: color 0.3s ease !important;
+}
+
+/* Color en hover para mantener la interactividad */
+.discounts-nav-btn:hover.prev::after,
+.discounts-nav-btn:hover.next::after {
+    color: white !important;
+}
+
+/* Ocultar el elemento i para evitar conflictos */
+.discounts-nav-btn i {
+    display: none !important;
+}
+
+/* Forzar la aparición de los íconos de navegación */
+.discounts-nav-btn.prev i {
+    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free" !important;
+    font-weight: 900 !important;
+}
+
+.discounts-nav-btn.prev i::before {
+    content: "\f053" !important;
+    display: inline-block !important;
+    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free" !important;
+    font-weight: 900 !important;
+    font-size: 16px !important;
+}
+
+.discounts-nav-btn.next i {
+    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free" !important;
+    font-weight: 900 !important;
+}
+
+.discounts-nav-btn.next i::before {
+    content: "\f054" !important;
+    display: inline-block !important;
+    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free" !important;
+    font-weight: 900 !important;
+    font-size: 16px !important;
 }
 
 /* Contenedor de precios para descuentos */
@@ -1960,8 +2029,8 @@ section h2 {
 /* Responsive para móviles */
 @media (max-width: 768px) {
     .special-discounts {
-        margin: 0;
-        padding: 0;
+        margin: 12px 0 12px 0;
+        padding: 8px 0 8px 0;
     }
     
     .discounts-container {
@@ -2902,9 +2971,9 @@ footer {
     
     /* Ocultar botones de navegación solo en móviles muy pequeños */
     .discounts-nav-btn {
-        display: none;
+        display: none !important;
     }
-    
+     
     .discount-card {
         flex: 0 0 160px;
         width: 160px;
