@@ -181,6 +181,109 @@
             <span class="cart-text">Ver carrito</span>
         </div>
 
+        <!-- Sección de Descuentos Especiales -->
+        <section class="special-discounts">
+            <h2>🔥 Descuentos Especiales</h2>
+            <div class="discounts-wrapper">
+                <div class="discounts-container">
+                    <div class="discounts-grid">
+                        <!-- Descuento 1 -->
+                        <div class="product-card discount-card searchable-item" id="descuento1">
+                            <div class="discount-badge">-40%</div>
+                            <div class="product-image">
+                                <img src="Imagenes/Xbox-01-copia-1024x1024.png" alt="Xbox Series X" width="800" height="600" loading="lazy">
+                            </div>
+                            <div class="product-info">
+                                <h3>Xbox Series X</h3>
+                                <p class="product-description">Consola de nueva generación con 4K nativo, 120fps y SSD ultra rápido.</p>
+                                <div class="price-container">
+                                    <p class="product-price-original">$149,999 ARS</p>
+                                    <p class="product-price">$89,999 ARS</p>
+                                </div>
+                                <button class="add-to-cart-btn" data-id="d1" data-name="Xbox Series X" data-price="89999">Añadir al carrito</button>
+                            </div>
+                        </div>
+
+                        <!-- Descuento 2 -->
+                        <div class="product-card discount-card searchable-item" id="descuento2">
+                            <div class="discount-badge">-35%</div>
+                            <div class="product-image">
+                                <img src="Imagenes/asus-proart-p16.png" alt="ASUS ProArt P16" width="800" height="600" loading="lazy">
+                            </div>
+                            <div class="product-info">
+                                <h3>ASUS ProArt P16</h3>
+                                <p class="product-description">Laptop profesional para creadores con pantalla OLED 4K y RTX 4060.</p>
+                                <div class="price-container">
+                                    <p class="product-price-original">$199,999 ARS</p>
+                                    <p class="product-price">$129,999 ARS</p>
+                                </div>
+                                <button class="add-to-cart-btn" data-id="d2" data-name="ASUS ProArt P16" data-price="129999">Añadir al carrito</button>
+                            </div>
+                        </div>
+
+                        <!-- Descuento 3 -->
+                        <div class="product-card discount-card searchable-item" id="descuento3">
+                            <div class="discount-badge">-50%</div>
+                            <div class="product-image">
+                                <img src="Imagenes/producto1.webp.avif" alt="Monitor Gaming 4K" width="800" height="600" loading="lazy">
+                            </div>
+                            <div class="product-info">
+                                <h3>Monitor Gaming 4K</h3>
+                                <p class="product-description">Monitor 27" 4K HDR con 144Hz, perfecto para gaming y trabajo profesional.</p>
+                                <div class="price-container">
+                                    <p class="product-price-original">$79,999 ARS</p>
+                                    <p class="product-price">$39,999 ARS</p>
+                                </div>
+                                <button class="add-to-cart-btn" data-id="d3" data-name="Monitor Gaming 4K" data-price="39999">Añadir al carrito</button>
+                            </div>
+                        </div>
+
+                        <!-- Descuento 4 -->
+                        <div class="product-card discount-card searchable-item" id="descuento4">
+                            <div class="discount-badge">-45%</div>
+                            <div class="product-image">
+                                <img src="Imagenes/asus-proart-p16.png" alt="Teclado Mecánico RGB" width="800" height="600" loading="lazy">
+                            </div>
+                            <div class="product-info">
+                                <h3>Teclado Mecánico RGB</h3>
+                                <p class="product-description">Teclado gaming con switches mecánicos, iluminación RGB y teclas programables.</p>
+                                <div class="price-container">
+                                    <p class="product-price-original">$24,999 ARS</p>
+                                    <p class="product-price">$13,749 ARS</p>
+                                </div>
+                                <button class="add-to-cart-btn" data-id="d4" data-name="Teclado Mecánico RGB" data-price="13749">Añadir al carrito</button>
+                            </div>
+                        </div>
+
+                        <!-- Descuento 5 -->
+                        <div class="product-card discount-card searchable-item" id="descuento5">
+                            <div class="discount-badge">-30%</div>
+                            <div class="product-image">
+                                <img src="Imagenes/xbox.png" alt="Mouse Gaming Pro" width="800" height="600" loading="lazy">
+                            </div>
+                            <div class="product-info">
+                                <h3>Mouse Gaming Pro</h3>
+                                <p class="product-description">Mouse inalámbrico de alta precisión con sensor óptico de 25,000 DPI.</p>
+                                <div class="price-container">
+                                    <p class="product-price-original">$18,999 ARS</p>
+                                    <p class="product-price">$13,299 ARS</p>
+                                </div>
+                                <button class="add-to-cart-btn" data-id="d5" data-name="Mouse Gaming Pro" data-price="13299">Añadir al carrito</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botones de navegación -->
+                <button class="discounts-nav-btn prev" onclick="scrollDiscounts('left')" aria-label="Anterior">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="discounts-nav-btn next" onclick="scrollDiscounts('right')" aria-label="Siguiente">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </section>
+
         <section class="products searchable-section">
             <h2>Nuestros Productos</h2>
             <div class="products-grid">

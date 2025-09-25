@@ -25,6 +25,127 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Carrito de compras
     let cart = [];
+
+    // Funcionalidad de deslizamiento para descuentos especiales en móviles
+    function initDiscountSwipe() {
+        const discountsContainer = document.querySelector('.discounts-container');
+        const discountsGrid = document.querySelector('.discounts-grid');
+        
+        if (!discountsContainer || !discountsGrid) return;
+        
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        let startTime;
+        let velocity = 0;
+        
+        // Eventos para mouse (desktop)
+        discountsContainer.addEventListener('mousedown', (e) => {
+            if (window.innerWidth > 768) return; // Solo en móviles
+            isDown = true;
+            startX = e.pageX - discountsContainer.offsetLeft;
+            scrollLeft = discountsContainer.scrollLeft;
+            startTime = Date.now();
+            discountsContainer.style.cursor = 'grabbing';
+        });
+        
+        discountsContainer.addEventListener('mouseleave', () => {
+            isDown = false;
+            discountsContainer.style.cursor = 'grab';
+        });
+        
+        discountsContainer.addEventListener('mouseup', () => {
+            isDown = false;
+            discountsContainer.style.cursor = 'grab';
+            applyMomentum();
+        });
+        
+        discountsContainer.addEventListener('mousemove', (e) => {
+            if (!isDown || window.innerWidth > 768) return;
+            e.preventDefault();
+            const x = e.pageX - discountsContainer.offsetLeft;
+            const walk = (x - startX) * 2;
+            discountsContainer.scrollLeft = scrollLeft - walk;
+            
+            // Calcular velocidad para momentum
+            const currentTime = Date.now();
+            const timeDiff = currentTime - startTime;
+            velocity = walk / timeDiff;
+        });
+        
+        // Eventos para touch (móviles)
+        discountsContainer.addEventListener('touchstart', (e) => {
+            isDown = true;
+            startX = e.touches[0].pageX - discountsContainer.offsetLeft;
+            scrollLeft = discountsContainer.scrollLeft;
+            startTime = Date.now();
+        });
+        
+        discountsContainer.addEventListener('touchmove', (e) => {
+            if (!isDown) return;
+            const x = e.touches[0].pageX - discountsContainer.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            discountsContainer.scrollLeft = scrollLeft - walk;
+            
+            // Calcular velocidad para momentum
+            const currentTime = Date.now();
+            const timeDiff = currentTime - startTime;
+            velocity = walk / timeDiff;
+        });
+        
+        discountsContainer.addEventListener('touchend', () => {
+            isDown = false;
+            applyMomentum();
+        });
+        
+        // Aplicar momentum al final del deslizamiento
+        function applyMomentum() {
+            if (Math.abs(velocity) > 0.5) {
+                const momentum = velocity * 100;
+                const targetScroll = discountsContainer.scrollLeft - momentum;
+                
+                discountsContainer.scrollTo({
+                    left: Math.max(0, Math.min(targetScroll, discountsContainer.scrollWidth - discountsContainer.clientWidth)),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        // Agregar indicadores de scroll en móviles
+        if (window.innerWidth <= 768) {
+            updateScrollIndicators();
+            discountsContainer.addEventListener('scroll', updateScrollIndicators);
+        }
+        
+        function updateScrollIndicators() {
+            const container = discountsContainer;
+            const isAtStart = container.scrollLeft <= 10;
+            const isAtEnd = container.scrollLeft >= container.scrollWidth - container.clientWidth - 10;
+            
+            // Remover indicadores existentes
+            const existingIndicators = container.querySelectorAll('.scroll-indicator');
+            existingIndicators.forEach(indicator => indicator.remove());
+            
+            // Agregar indicador izquierdo
+            if (!isAtStart) {
+                const leftIndicator = document.createElement('div');
+                leftIndicator.className = 'scroll-indicator scroll-left';
+                leftIndicator.innerHTML = '‹';
+                container.appendChild(leftIndicator);
+            }
+            
+            // Agregar indicador derecho
+            if (!isAtEnd) {
+                const rightIndicator = document.createElement('div');
+                rightIndicator.className = 'scroll-indicator scroll-right';
+                rightIndicator.innerHTML = '›';
+                container.appendChild(rightIndicator);
+            }
+        }
+    }
+    
+    // Inicializar funcionalidad de deslizamiento
+    initDiscountSwipe();
     
     // Función para escapar caracteres especiales en una expresión regular
     function escapeRegExp(string) {
@@ -1763,4 +1884,57 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Hacer funciones globales para acceso desde HTML
     window.toggleAutoPlay = toggleAutoPlay;
+    window.scrollDiscounts = scrollDiscounts;
+});
+
+// Función para navegar en la sección de descuentos
+function scrollDiscounts(direction) {
+    const container = document.querySelector('.discounts-container');
+    const scrollAmount = 300; // Cantidad de píxeles a desplazar
+    
+    if (direction === 'left') {
+        container.scrollBy({
+            left: -scrollAmount,
+            behavior: 'smooth'
+        });
+    } else if (direction === 'right') {
+        container.scrollBy({
+            left: scrollAmount,
+            behavior: 'smooth'
+        });
+    }
+    
+    // Actualizar estado de los botones después del scroll
+    setTimeout(() => {
+        updateDiscountNavButtons();
+    }, 300);
+}
+
+// Función para actualizar el estado de los botones de navegación
+function updateDiscountNavButtons() {
+    const container = document.querySelector('.discounts-container');
+    const prevBtn = document.querySelector('.discounts-nav-btn.prev');
+    const nextBtn = document.querySelector('.discounts-nav-btn.next');
+    
+    if (!container || !prevBtn || !nextBtn) return;
+    
+    const isAtStart = container.scrollLeft <= 0;
+    const isAtEnd = container.scrollLeft >= (container.scrollWidth - container.clientWidth - 1);
+    
+    prevBtn.disabled = isAtStart;
+    nextBtn.disabled = isAtEnd;
+}
+
+// Inicializar estado de botones cuando se carga la página
+document.addEventListener('DOMContentLoaded', () => {
+    updateDiscountNavButtons();
+    
+    // Actualizar botones cuando se redimensiona la ventana
+    window.addEventListener('resize', updateDiscountNavButtons);
+    
+    // Actualizar botones cuando se hace scroll manual
+    const container = document.querySelector('.discounts-container');
+    if (container) {
+        container.addEventListener('scroll', updateDiscountNavButtons);
+    }
 });
