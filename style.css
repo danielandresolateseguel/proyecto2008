@@ -2830,15 +2830,27 @@ footer {
 }
 
 /* ===== BOTONES DE NAVEGACIÓN DESCUENTOS - RESPONSIVE ===== */
-/* Móviles */
+/* Tablets */
 @media (max-width: 768px) {
     .discounts-container {
-        padding: 0 15px 10px 15px;
+        padding: 0 50px 10px 50px;
     }
     
-    /* Ocultar botones de navegación en móviles */
     .discounts-nav-btn {
-        display: none;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .discounts-nav-btn.prev {
+        left: 5px;
+    }
+    
+    .discounts-nav-btn.next {
+        right: 5px;
+    }
+    
+    .discounts-nav-btn i {
+        font-size: 16px;
     }
     
     .discount-card {
@@ -2888,7 +2900,7 @@ footer {
         padding: 0 10px 0 10px;
     }
     
-    /* Ocultar botones de navegación en móviles pequeños */
+    /* Ocultar botones de navegación solo en móviles muy pequeños */
     .discounts-nav-btn {
         display: none;
     }
