@@ -1960,17 +1960,12 @@ section h2 {
 /* Responsive para móviles */
 @media (max-width: 768px) {
     .special-discounts {
-        margin: 5px 0;
-        padding: 5px;
-    }
-    
-    .special-discounts h2 {
-        font-size: 1.8rem;
-        margin-bottom: 20px;
+        margin: 0;
+        padding: 0;
     }
     
     .discounts-container {
-        padding: 0 10px;
+        padding: 0 50px 5px 50px;
     }
     
     .discounts-grid {
@@ -1979,10 +1974,8 @@ section h2 {
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         gap: 15px;
-        padding: 10px 0;
-        margin: 0 -10px;
-        padding-left: 10px;
-        padding-right: 10px;
+        margin: 0;
+        padding: 0;
     }
     
     .discount-card {
@@ -2904,7 +2897,7 @@ footer {
 /* Móviles pequeños */
 @media (max-width: 480px) {
     .discounts-container {
-        padding: 0 45px 10px 45px;
+        padding: 0 45px 0 45px;
     }
     
     .discounts-nav-btn {
@@ -2935,24 +2928,24 @@ footer {
     }
     
     .discount-card .product-info {
-        padding: 8px;
+        padding: 5px;
     }
     
     .discount-card .product-info h3 {
         font-size: 13px;
-        margin-bottom: 4px;
+        margin-bottom: 3px;
         margin-top: 0;
     }
     
     .discount-card .product-description {
         font-size: 10px;
         line-height: 1.2;
-        margin-bottom: 6px;
+        margin-bottom: 4px;
     }
     
     .discount-card .product-price {
         font-size: 13px;
-        margin-bottom: 6px;
+        margin-bottom: 4px;
     }
     
     .discount-card .product-price-original {
