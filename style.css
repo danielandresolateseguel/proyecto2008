@@ -2059,6 +2059,28 @@ section h2 {
     
 }
 
+/* Responsive para dispositivos muy pequeños */
+@media (max-width: 480px) {
+    .special-discounts {
+        margin: 8px 0 8px 0;
+        padding: 6px 0 6px 0;
+    }
+    
+    .special-discounts h2 {
+        font-size: 1.6rem;
+        margin-bottom: 20px;
+    }
+    
+    .discounts-container {
+        padding: 0 40px 5px 40px;
+    }
+    
+    .discount-card {
+        flex: 0 0 220px;
+        min-width: 220px;
+    }
+}
+
 /* Sección de productos */
 .products-grid {
     display: grid;
@@ -2966,12 +2988,27 @@ footer {
 /* Móviles pequeños */
 @media (max-width: 480px) {
     .discounts-container {
-        padding: 0 10px 0 10px;
+        padding: 0 40px 5px 40px;
     }
     
-    /* Ocultar botones de navegación solo en móviles muy pequeños */
+    /* Botones de navegación más pequeños en móviles muy pequeños */
     .discounts-nav-btn {
-        display: none !important;
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+    
+    .discounts-nav-btn.prev {
+        left: 2px;
+    }
+    
+    .discounts-nav-btn.next {
+        right: 2px;
+    }
+    
+    .discounts-nav-btn.prev::after,
+    .discounts-nav-btn.next::after {
+        font-size: 16px;
     }
      
     .discount-card {
