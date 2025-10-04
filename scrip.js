@@ -1922,4 +1922,91 @@ document.addEventListener('DOMContentLoaded', () => {
     if (container) {
         container.addEventListener('scroll', updateDiscountNavButtons);
     }
+    
+    // Inicializar auto-scroll para descuentos
+    initDiscountAutoScroll();
 });
+
+// Variables para el auto-scroll
+let discountAutoScrollInterval;
+let isDiscountAutoScrollPaused = false;
+
+// Función para inicializar el auto-scroll de descuentos
+function initDiscountAutoScroll() {
+    const container = document.querySelector('.discounts-container');
+    const discountsWrapper = document.querySelector('.discounts-wrapper');
+    
+    if (!container || !discountsWrapper) return;
+    
+    // Función para hacer auto-scroll
+    function autoScrollDiscounts() {
+        if (isDiscountAutoScrollPaused) return;
+        
+        const isAtEnd = container.scrollLeft >= (container.scrollWidth - container.clientWidth - 1);
+        
+        if (isAtEnd) {
+            // Si llegamos al final, volver al inicio
+            container.scrollTo({
+                left: 0,
+                behavior: 'smooth'
+            });
+        } else {
+            // Continuar desplazándose hacia la derecha
+            scrollDiscounts('right');
+        }
+    }
+    
+    // Iniciar el auto-scroll cada 5 segundos
+    discountAutoScrollInterval = setInterval(autoScrollDiscounts, 5000);
+    
+    // Pausar auto-scroll al hacer hover sobre la sección
+    discountsWrapper.addEventListener('mouseenter', () => {
+        isDiscountAutoScrollPaused = true;
+    });
+    
+    // Reanudar auto-scroll al salir del hover
+    discountsWrapper.addEventListener('mouseleave', () => {
+        isDiscountAutoScrollPaused = false;
+    });
+    
+    // Pausar auto-scroll durante interacciones táctiles en móviles
+    container.addEventListener('touchstart', () => {
+        isDiscountAutoScrollPaused = true;
+    });
+    
+    // Reanudar auto-scroll después de un tiempo sin interacción táctil
+    let touchTimeout;
+    container.addEventListener('touchend', () => {
+        clearTimeout(touchTimeout);
+        touchTimeout = setTimeout(() => {
+            isDiscountAutoScrollPaused = false;
+        }, 3000); // Reanudar después de 3 segundos sin tocar
+    });
+    
+    // Pausar auto-scroll cuando se usan los botones de navegación
+    const navButtons = document.querySelectorAll('.discounts-nav-btn');
+    navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            isDiscountAutoScrollPaused = true;
+            // Reanudar después de 5 segundos
+            setTimeout(() => {
+                isDiscountAutoScrollPaused = false;
+            }, 5000);
+        });
+    });
+}
+
+// Función para detener el auto-scroll (útil si se necesita)
+function stopDiscountAutoScroll() {
+    if (discountAutoScrollInterval) {
+        clearInterval(discountAutoScrollInterval);
+        discountAutoScrollInterval = null;
+    }
+}
+
+// Función para reanudar el auto-scroll
+function resumeDiscountAutoScroll() {
+    if (!discountAutoScrollInterval) {
+        initDiscountAutoScroll();
+    }
+}
