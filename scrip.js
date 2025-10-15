@@ -23,6 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
     overlay.className = 'overlay';
     document.body.appendChild(overlay);
 
+    // Configuración por comercio (parametrizable desde cada HTML)
+    const VENDOR_ID = window.VENDOR_ID || document.body.getAttribute('data-vendor') || 'default';
+    const WHATSAPP_NUMBER = window.WHATSAPP_NUMBER || '+5492615893590'; // sobrescribir en cada HTML
+    const CART_STORAGE_KEY = window.CART_STORAGE_KEY || ('cart_' + VENDOR_ID);
+
     // Carrito de compras
     let cart = [];
 
@@ -362,7 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Cargar carrito desde localStorage si existe
     function loadCart() {
-        const savedCart = localStorage.getItem('cart');
+        const savedCart = localStorage.getItem(CART_STORAGE_KEY);
         if (savedCart) {
             cart = JSON.parse(savedCart);
             updateCartCount();
@@ -371,7 +376,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Guardar carrito en localStorage
     function saveCart() {
-        localStorage.setItem('cart', JSON.stringify(cart));
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
     }
     
     // Actualizar contador del carrito
@@ -768,8 +773,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const mensajeCodificado = encodeURIComponent(mensaje);
         
         // Crear el enlace de WhatsApp (puedes cambiar el número por el tuyo)
-        const numeroWhatsApp = '+5492615893590'; // Cambia este número por tu número de WhatsApp
-        const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${mensajeCodificado}`;
+        const urlWhatsApp = `https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeCodificado}`;
         
         // Abrir WhatsApp
         window.open(urlWhatsApp, '_blank');
@@ -1855,9 +1859,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const originalSubmitHandler = searchForm.onsubmit;
     searchForm.addEventListener('submit', function(e) {
         const searchTerm = searchInput.value.trim();
+        const skipHistory = searchForm?.dataset?.skipHistory === 'true';
         if (searchTerm) {
-            addToHistory(searchTerm);
+            if (!skipHistory) {
+                addToHistory(searchTerm);
+            }
             hideSuggestions();
+        }
+        // Limpiar flag para próximos envíos
+        if (skipHistory) {
+            delete searchForm.dataset.skipHistory;
         }
     });
 
@@ -1867,6 +1878,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Configurar observer de visibilidad para el carrusel
     setupVisibilityObserver();
     
+    // Inicializar la sección de intereses (círculos)
+    initInterestStrip();
+    // Inicializar flechas de navegación para la sección de intereses (móviles)
+    initInterestNav();
+
+    // Formatear etiquetas de intereses para móviles (una palabra por línea)
+    formatInterestLabelsForMobile();
+
+    // Reaplicar formato al cambiar tamaño de ventana
+    window.addEventListener('resize', () => {
+        // Pequeño debounce para evitar llamadas excesivas
+        clearTimeout(window.__formatLabelsResizeTimer);
+        window.__formatLabelsResizeTimer = setTimeout(() => {
+            formatInterestLabelsForMobile();
+        }, 150);
+    });
+
     // Hacer funciones globales para acceso desde HTML
     window.toggleAutoPlay = toggleAutoPlay;
     window.scrollDiscounts = scrollDiscounts;
@@ -1893,6 +1921,33 @@ function scrollDiscounts(direction) {
     setTimeout(() => {
         updateDiscountNavButtons();
     }, 300);
+}
+
+// Formatear etiquetas de intereses en móviles: una palabra por línea
+function formatInterestLabelsForMobile() {
+    const section = document.getElementById('interest-index');
+    if (!section) return;
+
+    const labels = section.querySelectorAll('.interest-label');
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+    labels.forEach(label => {
+        const originalText = label.dataset.originalLabel || label.textContent.trim();
+
+        // Guardar texto original una sola vez
+        if (!label.dataset.originalLabel) {
+            label.dataset.originalLabel = originalText;
+        }
+
+        if (isMobile) {
+            // Apilar palabras en móviles
+            const words = originalText.split(/\s+/).filter(Boolean);
+            label.innerHTML = words.join('<br>');
+        } else {
+            // Restaurar texto original en pantallas grandes
+            label.textContent = label.dataset.originalLabel || originalText;
+        }
+    });
 }
 
 // Función para actualizar el estado de los botones de navegación
@@ -2009,4 +2064,130 @@ function resumeDiscountAutoScroll() {
     if (!discountAutoScrollInterval) {
         initDiscountAutoScroll();
     }
+}
+
+// Inicializar comportamiento para la sección de intereses
+function initInterestStrip() {
+    const items = document.querySelectorAll('.interest-item');
+    const searchForm = document.getElementById('search-form');
+    const searchInput = document.getElementById('search-input');
+    const clearSearchBtn = document.getElementById('clear-search-btn');
+
+    // Mapeo de círculos de interés a productos de ejemplo
+    const interestProductMap = {
+        '2x1': 'interest-product-2x1',
+        'Liquidaciones': 'interest-product-liquidaciones',
+        'Destacados': 'interest-product-destacados',
+        'Nuevo': 'interest-product-nuevo',
+        'Más vendidos': 'interest-product-mas-vendidos'
+    };
+
+    if (!items.length || !searchForm || !searchInput) return;
+
+    items.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const term = (btn.getAttribute('data-term') || '').trim();
+            if (!term) return;
+
+            // Limpiar el campo de búsqueda para evitar confusiones
+            searchInput.value = '';
+            if (clearSearchBtn) clearSearchBtn.style.display = 'none';
+            if (document.activeElement === searchInput) {
+                searchInput.blur();
+            }
+
+            // No disparar búsqueda desde círculos; ocultar resultados y sugerencias
+            const suggestionsDropdown = document.getElementById('search-suggestions-dropdown');
+            if (suggestionsDropdown) {
+                suggestionsDropdown.classList.remove('active');
+            }
+            const searchResultsSection = document.querySelector('.search-results');
+            if (searchResultsSection) {
+                searchResultsSection.classList.remove('active');
+            }
+
+            // Llevar la vista hacia la sección de productos
+            const interestProductsSection = document.querySelector('.interest-products');
+            const productsSection = document.querySelector('.products');
+            (interestProductsSection || productsSection)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Desplazar y resaltar el producto de ejemplo asignado a este interés (sin agregar al carrito)
+            const mappedId = interestProductMap[term];
+            if (mappedId) {
+                const productCard = document.getElementById(mappedId);
+                if (productCard) {
+                    productCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    productCard.classList.add('interest-highlight');
+                    setTimeout(() => {
+                        productCard.classList.remove('interest-highlight');
+                    }, 1600);
+                }
+            }
+        });
+    });
+}
+
+// Navegación con flechas para la sección de intereses en móviles
+function initInterestNav() {
+    const section = document.getElementById('interest-index');
+    if (!section) return;
+
+    const strip = section.querySelector('.interest-strip');
+    const prevBtn = section.querySelector('.interest-nav-btn.prev');
+    const nextBtn = section.querySelector('.interest-nav-btn.next');
+    if (!strip || !prevBtn || !nextBtn) return;
+
+    function isMobile() {
+        return window.matchMedia('(max-width: 768px)').matches;
+    }
+
+    // Mostrar/ocultar flechas según ancho
+    function syncVisibility() {
+        const visible = isMobile();
+        prevBtn.style.display = visible ? 'flex' : 'none';
+        nextBtn.style.display = visible ? 'flex' : 'none';
+        updateState();
+    }
+
+    // Actualizar estado de botones (disabled al inicio/fin)
+    function updateState() {
+        const atStart = strip.scrollLeft <= 1;
+        const atEnd = (strip.scrollLeft + strip.clientWidth) >= (strip.scrollWidth - 1);
+        prevBtn.disabled = atStart;
+        nextBtn.disabled = atEnd;
+        prevBtn.classList.toggle('disabled', atStart);
+        nextBtn.classList.toggle('disabled', atEnd);
+        // Mostrar fades según contenido disponible
+        section.classList.toggle('has-left', !atStart);
+        section.classList.toggle('has-right', !atEnd);
+    }
+
+    // Al presionar, intentar mostrar todos los elementos no visibles
+    function scrollInterest(direction) {
+        if (direction === 'right') {
+            const remainingRight = strip.scrollWidth - (strip.scrollLeft + strip.clientWidth);
+            const amount = Math.max(strip.clientWidth, remainingRight);
+            strip.scrollTo({ left: strip.scrollLeft + amount, behavior: 'smooth' });
+        } else {
+            const remainingLeft = strip.scrollLeft;
+            const amount = Math.max(strip.clientWidth, remainingLeft);
+            strip.scrollTo({ left: Math.max(0, strip.scrollLeft - amount), behavior: 'smooth' });
+        }
+        setTimeout(updateState, 320);
+    }
+
+    prevBtn.addEventListener('click', () => scrollInterest('left'));
+    nextBtn.addEventListener('click', () => scrollInterest('right'));
+
+    strip.addEventListener('scroll', updateState);
+
+    // Debounce para resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(syncVisibility, 150);
+    });
+
+    // Inicializar visibilidad y estado
+    syncVisibility();
 }

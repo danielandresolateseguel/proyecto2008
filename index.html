@@ -283,8 +283,53 @@
             </div>
         </section>
 
+        <!-- Inicio: Sección de intereses en tira (círculos) -->
+        <section class="interest-section" id="interest-index" aria-labelledby="interest-section-title">
+            <h2 id="interest-section-title" class="section-title">Explora y aprovecha</h2>
+            <div class="interest-strip" role="list">
+                <button class="interest-item" role="listitem" data-term="2x1" aria-label="Ver promociones 2x1">
+                    <span class="interest-circle">
+                        <i class="fas fa-gift" aria-hidden="true"></i>
+                    </span>
+                    <span class="interest-label">2x1</span>
+                </button>
+                <button class="interest-item" role="listitem" data-term="Liquidaciones" aria-label="Ver liquidaciones">
+                    <span class="interest-circle">
+                        <i class="fas fa-tags" aria-hidden="true"></i>
+                    </span>
+                    <span class="interest-label">Liquidaciones</span>
+                </button>
+                <button class="interest-item" role="listitem" data-term="Destacados" aria-label="Ver productos destacados">
+                    <span class="interest-circle">
+                        <i class="fas fa-star" aria-hidden="true"></i>
+                    </span>
+                    <span class="interest-label">Productos destacados</span>
+                </button>
+                <button class="interest-item" role="listitem" data-term="Nuevo" aria-label="Ver productos recién llegados">
+                    <span class="interest-circle">
+                        <i class="fas fa-box-open" aria-hidden="true"></i>
+                    </span>
+                    <span class="interest-label">Recién llegados</span>
+                </button>
+                <button class="interest-item" role="listitem" data-term="Más vendidos" aria-label="Ver los más vendidos">
+                    <span class="interest-circle">
+                        <i class="fas fa-chart-line" aria-hidden="true"></i>
+                    </span>
+                    <span class="interest-label">Más vendidos</span>
+                </button>
+            </div>
+            <!-- Flechas de navegación para móviles -->
+            <button class="interest-nav-btn prev" aria-label="Anterior">
+                <i class="fas fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <button class="interest-nav-btn next" aria-label="Siguiente">
+                <i class="fas fa-chevron-right" aria-hidden="true"></i>
+            </button>
+        </section>
+        <!-- Fin: Sección de intereses en tira (círculos) -->
+
         <section class="products searchable-section">
-            <h2>Nuestros Productos</h2>
+            <h2 id="products-index-title" class="section-title">Nuestros Productos</h2>
             <div class="products-grid">
                 <!-- Producto 1 -->
                 <div class="product-card searchable-item" id="producto1">
@@ -418,8 +463,84 @@
             </div>
         </section>
 
+        <!-- Productos de ejemplo por interés (justo debajo de los existentes) -->
+        <section class="products interest-products searchable-section">
+            <h2 class="section-title">Recomendados por interés</h2>
+            <div class="products-grid">
+                <!-- 2x1 -->
+                <div class="product-card searchable-item" id="interest-product-2x1">
+                    <div class="interest-badge">2x1</div>
+                    <div class="product-image">
+                        <img src="Imagenes/producto2.webp" alt="Pack 2x1 Auriculares Lite" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Pack 2x1 Auriculares Lite</h3>
+                        <p class="product-description">Dos auriculares livianos con buen sonido para uso diario.</p>
+                        <p class="product-price">$9,999 ARS</p>
+                        <button class="add-to-cart-btn" data-id="i1" data-name="Pack 2x1 Auriculares Lite" data-price="9999">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Liquidaciones -->
+                <div class="product-card searchable-item" id="interest-product-liquidaciones">
+                    <div class="interest-badge">Liquidación</div>
+                    <div class="product-image">
+                        <img src="Imagenes/producto3.webp" alt="Mouse Compact Liquidación" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Mouse Compact Liquidación</h3>
+                        <p class="product-description">Mouse compacto y confiable, ideal para notebooks.</p>
+                        <p class="product-price">$5,999 ARS</p>
+                        <button class="add-to-cart-btn" data-id="i2" data-name="Mouse Compact Liquidación" data-price="5999">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Destacados -->
+                <div class="product-card searchable-item" id="interest-product-destacados">
+                    <div class="interest-badge">Destacado</div>
+                    <div class="product-image">
+                        <img src="Imagenes/Xbox-01-copia-1024x1024.png" alt="Mini Altavoz Destacado" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Mini Altavoz Destacado</h3>
+                        <p class="product-description">Altavoz portátil con buen volumen y graves sorpresivos.</p>
+                        <p class="product-price">$7,999 ARS</p>
+                        <button class="add-to-cart-btn" data-id="i3" data-name="Mini Altavoz Destacado" data-price="7999">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Recién llegados -->
+                <div class="product-card searchable-item" id="interest-product-nuevo">
+                    <div class="interest-badge">Nuevo</div>
+                    <div class="product-image">
+                        <img src="Imagenes/images.jfif" alt="Cargador Rápido USB-C" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Cargador Rápido USB-C</h3>
+                        <p class="product-description">Carga rápida y segura para tus dispositivos compatibles.</p>
+                        <p class="product-price">$4,999 ARS</p>
+                        <button class="add-to-cart-btn" data-id="i4" data-name="Cargador Rápido USB-C" data-price="4999">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Más vendidos -->
+                <div class="product-card searchable-item" id="interest-product-mas-vendidos">
+                    <div class="interest-badge">Más vendidos</div>
+                    <div class="product-image">
+                        <img src="Imagenes/0NvnRmTfq_720x0__1.jpg" alt="Cable Lightning Original" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Cable Lightning Original</h3>
+                        <p class="product-description">Calidad certificada y larga duración para dispositivos Apple.</p>
+                        <p class="product-price">$6,999 ARS</p>
+                        <button class="add-to-cart-btn" data-id="i5" data-name="Cable Lightning Original" data-price="6999">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="content searchable-section">
-            <h2>Información de la Tienda</h2>
+            <h2 id="store-info-index-title" class="section-title">Información de la Tienda</h2>
             <div class="content-items">
                 <article id="articulo1" class="searchable-item">
                     <h3>Sobre Nosotros</h3>

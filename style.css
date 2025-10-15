@@ -2123,6 +2123,30 @@ section h2 {
     padding: 15px;
 }
 
+/* Badges y resaltado por interés */
+.product-card {
+    position: relative;
+}
+
+.interest-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(135deg, #7c5cff, #b197fc);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    z-index: 2;
+}
+
+.product-card.interest-highlight {
+    box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.5), 0 10px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+
 .product-info h3 {
     margin-top: 0;
     margin-bottom: 10px;
@@ -3059,4 +3083,341 @@ footer {
     .discounts-grid {
         gap: 12px;
     }
+}
+
+/* ===== Sección de intereses en tira (círculos) ===== */
+.interest-section {
+    padding: 24px 16px;
+    /* Full-bleed como el carrusel */
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+}
+.interest-section#interest-index { position: relative; }
+/* Fades en bordes para indicar scroll (solo móviles, index) */
+@media (max-width: 768px) {
+  .interest-section#interest-index::before,
+  .interest-section#interest-index::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 24px;
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .interest-section#interest-index::before {
+    left: 0;
+    background: linear-gradient(to right, #f7f9fc, rgba(247, 249, 252, 0));
+  }
+  .interest-section#interest-index::after {
+    right: 0;
+    background: linear-gradient(to left, #f7f9fc, rgba(247, 249, 252, 0));
+  }
+  .interest-section#interest-index.has-left::before { opacity: 1; }
+  .interest-section#interest-index.has-right::after { opacity: 1; }
+}
+@media (max-width: 480px) {
+  /* Fades más sutiles en móviles pequeños */
+  .interest-section#interest-index::before,
+  .interest-section#interest-index::after { width: 18px; }
+}
+.interest-section .section-title {
+    margin-bottom: 12px;
+}
+/* Título más sutil solo para index.html */
+.interest-section#interest-index .section-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #5a6f90;
+    letter-spacing: 0.2px;
+    margin: 0 16px 10px;
+    padding-bottom: 0;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.interest-section#interest-index .section-title::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7c5cff, #b197fc);
+    box-shadow: 0 0 8px rgba(124, 92, 255, 0.35);
+}
+/* Títulos sutiles solo para index.html: Productos e Información */
+#products-index-title.section-title,
+#store-info-index-title.section-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #5a6f90;
+    letter-spacing: 0.2px;
+    margin: 0 16px 10px;
+    padding-bottom: 0;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+#products-index-title.section-title::before,
+#store-info-index-title.section-title::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7c5cff, #b197fc);
+    box-shadow: 0 0 8px rgba(124, 92, 255, 0.35);
+}
+.interest-strip {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding: 8px 4px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    justify-content: space-between;
+}
+.interest-section#interest-index .interest-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: rgba(0, 0, 0, 0.15);
+    color: #333;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    z-index: 10;
+    cursor: pointer;
+}
+.interest-section#interest-index .interest-nav-btn i { font-size: 12px; }
+.interest-section#interest-index .interest-nav-btn:disabled,
+.interest-section#interest-index .interest-nav-btn.disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+.interest-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-width: 100px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    scroll-snap-align: center;
+    flex: 1 1 120px;
+}
+.interest-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: linear-gradient(135deg, #ff7a7a, #ff3d3d);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.interest-item:nth-child(2) .interest-circle { background: linear-gradient(135deg, #ffb86c, #ff9f1a); }
+.interest-item:nth-child(3) .interest-circle { background: linear-gradient(135deg, #7bdff2, #37b8d1); }
+.interest-item:nth-child(4) .interest-circle { background: linear-gradient(135deg, #a8e6cf, #56c596); }
+.interest-item:nth-child(5) .interest-circle { background: linear-gradient(135deg, #b197fc, #7c5cff); }
+.interest-circle i {
+    font-size: 28px;
+}
+.interest-item:hover .interest-circle,
+.interest-item:focus .interest-circle {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+/* Index-only: animación sutil para los círculos */
+@keyframes interest-breathe {
+  0% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.025); filter: brightness(1.03); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+.interest-section#interest-index .interest-circle {
+  position: relative;
+  animation: interest-breathe 4.2s ease-in-out infinite;
+  will-change: transform, filter;
+}
+.interest-section#interest-index .interest-item:hover .interest-circle,
+.interest-section#interest-index .interest-item:focus .interest-circle {
+  animation-play-state: paused;
+}
+
+/* Index-only: efecto ripple sutil al tocar/click */
+.interest-section#interest-index .interest-circle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transform: scale(1);
+  box-shadow: 0 0 0 0 rgba(247, 249, 252, 0.6);
+  opacity: 0;
+  pointer-events: none;
+}
+.interest-section#interest-index .interest-item:active .interest-circle::before {
+  animation: tapRippleIndexCircle 480ms ease-out forwards;
+}
+@keyframes tapRippleIndexCircle {
+  0% { opacity: 0.6; transform: scale(1); box-shadow: 0 0 0 0 rgba(247, 249, 252, 0.6); }
+  70% { opacity: 0.35; transform: scale(1.13); box-shadow: 0 0 0 10px rgba(247, 249, 252, 0.25); }
+  100% { opacity: 0; transform: scale(1.25); box-shadow: 0 0 0 18px rgba(247, 249, 252, 0); }
+}
+
+/* Respeto a usuarios con reducción de movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .interest-section#interest-index .interest-circle { animation: none !important; }
+  .interest-section#interest-index .interest-item:active .interest-circle::before { animation: none !important; }
+}
+.interest-label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+@media (max-width: 768px) {
+    .interest-circle { width: 70px; height: 70px; }
+    .interest-item { min-width: 90px; }
+}
+@media (max-width: 480px) {
+    .interest-circle { width: 64px; height: 64px; }
+    .interest-item { min-width: 84px; }
+    .interest-label { font-size: 0.9rem; }
+}
+/* Index-only mobile: mostrar 3 círculos y permitir scroll lateral */
+@media (max-width: 768px) {
+  .interest-section#interest-index { padding: 16px 12px; }
+  .interest-section#interest-index .interest-strip {
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    justify-content: flex-start;
+    /* Ocultar barra de scroll en móviles (Firefox/IE/Edge legado) */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  /* Ocultar barra de scroll en móviles (WebKit: Chrome/Safari) */
+  .interest-section#interest-index .interest-strip::-webkit-scrollbar { display: none; }
+  .interest-section#interest-index .interest-item {
+    flex: 0 0 calc((100% - 24px) / 3);
+    min-width: calc((100% - 24px) / 3);
+  }
+  .interest-section#interest-index .interest-circle { width: 60px; height: 60px; }
+  .interest-section#interest-index .interest-nav-btn { display: flex; }
+  .interest-section#interest-index .interest-nav-btn.prev { left: 8px; }
+  .interest-section#interest-index .interest-nav-btn.next { right: 8px; }
+}
+@media (max-width: 480px) {
+  .interest-section#interest-index { padding: 12px 8px; }
+  .interest-section#interest-index .interest-strip {
+    gap: 8px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    justify-content: flex-start;
+    /* Ocultar barra de scroll en móviles (Firefox/IE/Edge legado) */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  /* Ocultar barra de scroll en móviles (WebKit: Chrome/Safari) */
+  .interest-section#interest-index .interest-strip::-webkit-scrollbar { display: none; }
+  .interest-section#interest-index .interest-item {
+    flex: 0 0 calc((100% - 16px) / 3);
+    min-width: calc((100% - 16px) / 3);
+  }
+  .interest-section#interest-index .interest-circle { width: 52px; height: 52px; }
+  .interest-section#interest-index .interest-label { font-size: 0.8rem; }
+  .interest-section#interest-index .interest-nav-btn { width: 28px; height: 28px; }
+  .interest-section#interest-index .interest-nav-btn.prev { left: 6px; }
+  .interest-section#interest-index .interest-nav-btn.next { right: 6px; }
+}
+
+/* Index-only: ajustar texto en móviles para evitar solapamientos */
+@media (max-width: 768px) {
+  .interest-section#interest-index .interest-label {
+    font-size: 0.75rem;
+    line-height: 1.15;
+    text-align: center;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+@media (max-width: 480px) {
+  .interest-section#interest-index .interest-label {
+    font-size: 0.65rem;
+    line-height: 1.15;
+    letter-spacing: 0;
+    text-align: center;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .interest-section#interest-index .interest-circle i {
+    font-size: 22px;
+  }
+}
+
+/* Index-only: ocultar label y mostrar tooltip al tocar en móviles */
+@media (max-width: 768px) {
+  .interest-section#interest-index .interest-label { display: none; }
+  .interest-section#interest-index .interest-circle { position: relative; }
+  .interest-section#interest-index .interest-item:active .interest-circle::after,
+  .interest-section#interest-index .interest-item:focus .interest-circle::after {
+    content: attr(data-term);
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(33, 33, 33, 0.92);
+    color: #fff;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    z-index: 20;
+    pointer-events: none;
+  }
+}
+@media (max-width: 480px) {
+  .interest-section#interest-index .interest-item:active .interest-circle::after,
+  .interest-section#interest-index .interest-item:focus .interest-circle::after {
+    font-size: 0.7rem;
+    padding: 5px 7px;
+  }
+}
+
+/* Restaurar labels visibles y limpiar tooltip en móviles (solo index) */
+@media (max-width: 768px) {
+  .interest-section#interest-index .interest-label {
+    display: inline-block !important;
+    font-size: 0.85rem;
+    line-height: 1.2;
+    text-align: center;
+    margin-top: 6px;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .interest-section#interest-index .interest-item .interest-circle::after { content: none !important; }
+}
+@media (max-width: 480px) {
+  .interest-section#interest-index .interest-label {
+    display: inline-block !important;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    text-align: center;
+    margin-top: 6px;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .interest-section#interest-index .interest-item .interest-circle::after { content: none !important; }
 }
