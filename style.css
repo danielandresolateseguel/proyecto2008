@@ -2147,6 +2147,49 @@ section h2 {
     transform: translateY(-2px);
 }
 
+/* Botón flotante: Volver arriba */
+.back-to-top-float {
+    position: fixed;
+    bottom: 88px; /* por encima del carrito flotante */
+    left: 20px;
+    z-index: 1000;
+    background: linear-gradient(135deg, #4a6fa5 0%, #3a5a85 100%);
+    color: #fff;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+}
+
+.back-to-top-float.visible {
+    display: flex;
+    animation: bounceIn 0.4s ease-out;
+}
+
+.back-to-top-float:hover,
+.back-to-top-float:focus {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+    outline: none;
+}
+
+@media (max-width: 768px) {
+    .back-to-top-float {
+        bottom: 80px;
+        left: 15px;
+        width: 44px;
+        height: 44px;
+        font-size: 17px;
+        touch-action: manipulation;
+    }
+}
+
 .product-info h3 {
     margin-top: 0;
     margin-bottom: 10px;

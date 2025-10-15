@@ -1855,6 +1855,36 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Configuración del botón flotante "volver arriba"
+    const backToTopBtn = document.getElementById('back-to-top-float');
+    if (backToTopBtn) {
+        backToTopBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            backToTopBtn.classList.remove('visible');
+        });
+    }
+    // Mostrar/ocultar el botón según scroll (móviles: cerca del final)
+    window.addEventListener('scroll', () => {
+        if (!backToTopBtn) return;
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+        // Ocultar cerca del tope siempre
+        if (window.scrollY < 120) {
+            backToTopBtn.classList.remove('visible');
+            return;
+        }
+
+        if (isMobile) {
+            const bottomDistance = document.documentElement.scrollHeight - (window.scrollY + window.innerHeight);
+            // Mostrar automáticamente cuando está a ~600px del final del contenido
+            if (bottomDistance < 600) {
+                backToTopBtn.classList.add('visible');
+            }
+            // No ocultar si no está cerca del final, para respetar estados previos (p. ej., clic en círculos)
+        }
+    });
+
     // Modificar el event listener del formulario existente para agregar al historial
     const originalSubmitHandler = searchForm.onsubmit;
     searchForm.addEventListener('submit', function(e) {
@@ -2072,6 +2102,7 @@ function initInterestStrip() {
     const searchForm = document.getElementById('search-form');
     const searchInput = document.getElementById('search-input');
     const clearSearchBtn = document.getElementById('clear-search-btn');
+    const backToTopBtn = document.getElementById('back-to-top-float');
 
     // Mapeo de círculos de interés a productos de ejemplo
     const interestProductMap = {
@@ -2121,6 +2152,12 @@ function initInterestStrip() {
                     setTimeout(() => {
                         productCard.classList.remove('interest-highlight');
                     }, 1600);
+                    // Mostrar botón flotante para volver al inicio
+                    if (backToTopBtn) {
+                        backToTopBtn.classList.add('visible');
+                        // Ocultar después de un tiempo si no se usa
+                        setTimeout(() => backToTopBtn.classList.remove('visible'), 12000);
+                    }
                 }
             }
         });
