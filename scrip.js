@@ -1,4 +1,5 @@
 // Esperar a que el DOM esté completamente cargado
+let backToTopForceVisibleUntil = 0; // Visibilidad forzada tras clic en círculos
 document.addEventListener('DOMContentLoaded', function() {
     // Elementos del DOM
     const searchForm = document.getElementById('search-form');
@@ -1862,9 +1863,10 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: 'smooth' });
             backToTopBtn.classList.remove('visible');
+            backToTopForceVisibleUntil = 0; // cancelar estado forzado
         });
     }
-    // Mostrar/ocultar el botón según scroll (móviles: cerca del final)
+    // Mostrar/ocultar el botón según scroll
     window.addEventListener('scroll', () => {
         if (!backToTopBtn) return;
         const isMobile = window.matchMedia('(max-width: 768px)').matches;
@@ -1875,13 +1877,33 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Si está forzado visible por interacción reciente, mantener visible
+        if (backToTopForceVisibleUntil > Date.now()) {
+            backToTopBtn.classList.add('visible');
+            return;
+        }
+
         if (isMobile) {
             const bottomDistance = document.documentElement.scrollHeight - (window.scrollY + window.innerHeight);
-            // Mostrar automáticamente cuando está a ~600px del final del contenido
+            // Mostrar automáticamente cuando está a ~600px del final del contenido en móviles
             if (bottomDistance < 600) {
                 backToTopBtn.classList.add('visible');
             }
             // No ocultar si no está cerca del final, para respetar estados previos (p. ej., clic en círculos)
+        } else {
+            // Escritorio: mostrar cuando se alcance el 80% del documento (progreso de lectura)
+            const docEl = document.documentElement;
+            const scrolledBottom = window.scrollY + window.innerHeight;
+            const progress = scrolledBottom / docEl.scrollHeight;
+
+            if (progress >= 0.8) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                // Histeresis suave: si se baja bastante, ocultar
+                if (progress < 0.75) {
+                    backToTopBtn.classList.remove('visible');
+                }
+            }
         }
     });
 
@@ -1912,6 +1934,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initInterestStrip();
     // Inicializar flechas de navegación para la sección de intereses (móviles)
     initInterestNav();
+    // Oscurecer banda de intereses cuando se centra en pantalla
+    initInterestFocusState();
 
     // Formatear etiquetas de intereses para móviles (una palabra por línea)
     formatInterestLabelsForMobile();
@@ -2154,9 +2178,13 @@ function initInterestStrip() {
                     }, 1600);
                     // Mostrar botón flotante para volver al inicio
                     if (backToTopBtn) {
+                        backToTopForceVisibleUntil = Date.now() + 8000;
                         backToTopBtn.classList.add('visible');
                         // Ocultar después de un tiempo si no se usa
-                        setTimeout(() => backToTopBtn.classList.remove('visible'), 12000);
+                        setTimeout(() => {
+                            backToTopForceVisibleUntil = 0;
+                            backToTopBtn.classList.remove('visible');
+                        }, 8000);
                     }
                 }
             }
@@ -2227,4 +2255,66 @@ function initInterestNav() {
 
     // Inicializar visibilidad y estado
     syncVisibility();
+}
+
+// Enfoque visual para la sección de intereses: oscurecer al centrarse en viewport
+function initInterestFocusState() {
+    const interestSection = document.getElementById('interest-index');
+    if (!interestSection) return;
+
+    let prevIntensity = 0;
+    const clamp01 = (v) => Math.min(1, Math.max(0, v));
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+    const updateInterestFocusState = () => {
+        const rect = interestSection.getBoundingClientRect();
+        const viewportCenterY = window.innerHeight / 2;
+        const sectionCenterY = rect.top + rect.height / 2;
+        const distance = Math.abs(sectionCenterY - viewportCenterY);
+        const visible = rect.top < window.innerHeight && rect.bottom > 0;
+
+        // Arranque más temprano y suavizado: de startThreshold (inicio) a fullThreshold (centro)
+        const startThreshold = Math.min(window.innerHeight * 0.45, 320);
+        const fullThreshold  = Math.min(window.innerHeight * 0.18, 140);
+
+        let rawIntensity = 0;
+        if (visible) {
+            if (distance <= fullThreshold) {
+                rawIntensity = 1;
+            } else if (distance >= startThreshold) {
+                rawIntensity = 0;
+            } else {
+                // Mapea linealmente entre startThreshold y fullThreshold
+                rawIntensity = 1 - ((distance - fullThreshold) / (startThreshold - fullThreshold));
+            }
+        }
+
+        // Suavizado con ease-out y pequeño blending para evitar saltos
+        const eased = easeOutCubic(clamp01(rawIntensity));
+        const blended = prevIntensity + (eased - prevIntensity) * 0.25;
+
+        // Actualiza variables CSS (opacidades de overlay)
+        interestSection.style.setProperty('--focus-linear', (0.26 * blended).toFixed(3));
+        interestSection.style.setProperty('--focus-radial', (0.16 * blended).toFixed(3));
+
+        // Box-shadow sutil cuando hay algo de intensidad
+        interestSection.classList.toggle('focused', blended > 0.08);
+        prevIntensity = blended;
+    };
+
+    let tickingFocus = false;
+    const onScrollOrResize = () => {
+        if (!tickingFocus) {
+            tickingFocus = true;
+            requestAnimationFrame(() => {
+                updateInterestFocusState();
+                tickingFocus = false;
+            });
+        }
+    };
+
+    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    window.addEventListener('resize', onScrollOrResize);
+    // Evaluación inicial
+    updateInterestFocusState();
 }

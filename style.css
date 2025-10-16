@@ -3135,7 +3135,46 @@ footer {
     width: 100vw;
     margin-left: calc(-50vw + 50%);
 }
-.interest-section#interest-index { position: relative; }
+.interest-section#interest-index {
+  position: relative;
+  /* Variables para controlar opacidades del overlay de forma progresiva */
+  --focus-linear: 0;
+  --focus-radial: 0;
+  /* Fondo base + overlay controlado por variables (sin saltos bruscos) */
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(124, 92, 255, var(--focus-radial)) 0%, rgba(124, 92, 255, 0) 60%),
+    linear-gradient(135deg, rgba(124, 92, 255, var(--focus-linear)), rgba(185, 151, 252, var(--focus-linear))),
+    #f7f9fc;
+  /* Separación sutil de la banda */
+  box-shadow: inset 0 1px 0 rgba(90, 110, 140, 0.08), inset 0 -1px 0 rgba(90, 110, 140, 0.08);
+  transition: box-shadow 320ms ease-out;
+  /* Reducir espacios superior e inferior */
+  padding: 14px 12px;
+}
+
+/* Estado: sección de intereses enfocada (centrada en viewport) */
+.interest-section#interest-index.focused {
+  box-shadow: inset 0 2px 0 rgba(90, 110, 140, 0.12), inset 0 -2px 0 rgba(90, 110, 140, 0.12);
+}
+
+/* (Eliminado halo separado para evitar doble fondo y opacidades duplicadas) */
+
+/* Animaciones sutiles */
+@keyframes interestSheen {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes haloPulse {
+  0%, 100% { opacity: 0.12; }
+  50%      { opacity: 0.20; }
+}
+
+/* Respeto por usuarios con menor movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .interest-section#interest-index.focused { animation: none; }
+  .interest-section#interest-index.focused::before { animation: none; }
+}
 /* Fades en bordes para indicar scroll (solo móviles, index) */
 @media (max-width: 768px) {
   .interest-section#interest-index::before,
@@ -3175,12 +3214,16 @@ footer {
     font-weight: 500;
     color: #5a6f90;
     letter-spacing: 0.2px;
-    margin: 0 16px 10px;
+    margin: 0 16px 6px;
     padding-bottom: 0;
     border: none;
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    transition: color 260ms ease-out;
+}
+.interest-section#interest-index.focused .section-title {
+    color: #000;
 }
 .interest-section#interest-index .section-title::before {
     content: "";
@@ -3217,12 +3260,16 @@ footer {
     display: flex;
     gap: 16px;
     overflow-x: auto;
-    padding: 8px 4px;
+    padding: 4px 4px;
     scroll-snap-type: x proximity;
     -webkit-overflow-scrolling: touch;
     width: 100%;
     justify-content: space-between;
+    position: relative; /* necesario para overlay interno */
 }
+
+/* Overlay interno para oscurecer con transición suave cuando la sección está enfocada */
+/* Overlay ahora aplicado al contenedor en estado focused; se elimina el ::before de .interest-strip */
 .interest-section#interest-index .interest-nav-btn {
     position: absolute;
     top: 50%;
@@ -3282,17 +3329,23 @@ footer {
     transform: translateY(-2px) scale(1.05);
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
-/* Index-only: animación sutil para los círculos */
-@keyframes interest-breathe {
-  0% { transform: scale(1); filter: brightness(1); }
-  50% { transform: scale(1.025); filter: brightness(1.03); }
-  100% { transform: scale(1); filter: brightness(1); }
+/* Index-only: animación tipo ola de izquierda a derecha (más marcada) */
+@keyframes interest-wave {
+  0%   { transform: scale(1);     filter: brightness(1); }
+  30%  { transform: scale(1.12);  filter: brightness(1.06); }
+  60%  { transform: scale(1.04);  filter: brightness(1.02); }
+  100% { transform: scale(1);     filter: brightness(1); }
 }
 .interest-section#interest-index .interest-circle {
   position: relative;
-  animation: interest-breathe 4.2s ease-in-out infinite;
+  animation: interest-wave 2.8s cubic-bezier(.25,.8,.25,1) infinite both;
   will-change: transform, filter;
 }
+.interest-section#interest-index .interest-item:nth-child(1) .interest-circle { animation-delay: 0s; }
+.interest-section#interest-index .interest-item:nth-child(2) .interest-circle { animation-delay: 0.15s; }
+.interest-section#interest-index .interest-item:nth-child(3) .interest-circle { animation-delay: 0.30s; }
+.interest-section#interest-index .interest-item:nth-child(4) .interest-circle { animation-delay: 0.45s; }
+.interest-section#interest-index .interest-item:nth-child(5) .interest-circle { animation-delay: 0.60s; }
 .interest-section#interest-index .interest-item:hover .interest-circle,
 .interest-section#interest-index .interest-item:focus .interest-circle {
   animation-play-state: paused;
@@ -3340,7 +3393,7 @@ footer {
 }
 /* Index-only mobile: mostrar 3 círculos y permitir scroll lateral */
 @media (max-width: 768px) {
-  .interest-section#interest-index { padding: 16px 12px; }
+  .interest-section#interest-index { padding: 12px 10px; }
   .interest-section#interest-index .interest-strip {
     gap: 12px;
     overflow-x: auto;
