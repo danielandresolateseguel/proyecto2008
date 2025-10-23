@@ -24,10 +24,43 @@ document.addEventListener('DOMContentLoaded', function() {
     overlay.className = 'overlay';
     document.body.appendChild(overlay);
 
-    // Configuración por comercio (parametrizable desde cada HTML)
+    // Inicializar toggles de modalidad Mesa/Dirección
+    const orderTypeRadios = document.querySelectorAll('input[name="orderType"]');
+    const mesaFields = document.getElementById('order-mesa-fields');
+    const addressFields = document.getElementById('order-address-fields');
+    if (orderTypeRadios && mesaFields && addressFields) {
+        orderTypeRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                const isMesa = radio.value === 'mesa';
+                mesaFields.style.display = isMesa ? 'block' : 'none';
+                addressFields.style.display = isMesa ? 'none' : 'block';
+            });
+        });
+        // Estado inicial
+        mesaFields.style.display = 'block';
+        addressFields.style.display = 'none';
+    }
+
+    // Configuración por rubro/negocio (parametrizable desde HTML/JS)
+    const CATEGORY = window.CATEGORY || document.body.getAttribute('data-category') || 'general';
     const VENDOR_ID = window.VENDOR_ID || document.body.getAttribute('data-vendor') || 'default';
     const WHATSAPP_NUMBER = window.WHATSAPP_NUMBER || '+5492615893590'; // sobrescribir en cada HTML
-    const CART_STORAGE_KEY = window.CART_STORAGE_KEY || ('cart_' + VENDOR_ID);
+    const CART_STORAGE_KEY = window.CART_STORAGE_KEY || (`cart_${CATEGORY}_${VENDOR_ID}`);
+    const CHECKOUT_MODE = window.CHECKOUT_MODE || (CATEGORY === 'servicios' ? 'whatsapp' : CATEGORY === 'comercio' ? 'envio' : CATEGORY === 'gastronomia' ? 'mesa' : 'general');
+    console.info('Cart key:', CART_STORAGE_KEY, 'Mode:', CHECKOUT_MODE);
+
+    // Etiquetas del botón de checkout según modo
+    if (checkoutBtn) {
+        if (CHECKOUT_MODE === 'whatsapp') {
+            checkoutBtn.textContent = '📱 Enviar por WhatsApp';
+        } else if (CHECKOUT_MODE === 'envio') {
+            checkoutBtn.textContent = '🚚 Finalizar compra';
+        } else if (CHECKOUT_MODE === 'mesa') {
+            checkoutBtn.textContent = '🍽️ Realizar pedido';
+        } else {
+            checkoutBtn.textContent = '🛒 Finalizar';
+        }
+    }
 
     // Carrito de compras
     let cart = [];
@@ -137,6 +170,64 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Inicializar funcionalidad de deslizamiento
     initDiscountSwipe();
+
+    // Filtro de categorías (gastronomía)
+    const categoryFilter = document.getElementById('category-filter');
+    let selectedCategory = 'todos';
+
+    function itemMatchesSelectedCategory(item) {
+        const catAttr = (item.getAttribute('data-food-category') || '').toLowerCase();
+        const categories = catAttr.split(',').map(c => c.trim());
+        if (selectedCategory === 'todos') return true;
+        if (selectedCategory === 'bebidas-cocteles') return categories.includes('bebidas') || categories.includes('cocteles');
+        if (selectedCategory === 'al-plato') return !categories.includes('bebidas') && !categories.includes('cocteles');
+        return categories.includes(selectedCategory);
+    }
+
+    function applyCategoryFilter() {
+        searchableItems.forEach(item => {
+            // Excluir los platos destacados de los filtros de categoría
+            const featuredSection = document.getElementById('featured-dishes');
+            const isInFeaturedSection = featuredSection && featuredSection.contains(item);
+            
+            if (isInFeaturedSection) {
+                // Los platos destacados siempre se muestran, no se aplican filtros
+                item.style.display = '';
+            } else {
+                // Solo aplicar filtros a los elementos del menú principal
+                item.style.display = itemMatchesSelectedCategory(item) ? '' : 'none';
+            }
+        });
+    }
+
+    if (categoryFilter) {
+        const filterButtons = categoryFilter.querySelectorAll('.filter-btn');
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedCategory = btn.getAttribute('data-filter') || 'todos';
+                applyCategoryFilter();
+
+                // Reaplicar búsqueda si está activa, respetando el filtro
+                const searchTerm = searchInput.value.trim().toLowerCase();
+                const searchResultsSection = document.querySelector('.search-results');
+                if (searchTerm !== '' && searchResultsSection.classList.contains('active')) {
+                    // Excluir platos destacados de la búsqueda filtrada
+                    const featuredSection = document.getElementById('featured-dishes');
+                    const filteredItemsForSearch = Array.from(searchableItems).filter(item => {
+                        const isInFeaturedSection = featuredSection && featuredSection.contains(item);
+                        return !isInFeaturedSection && itemMatchesSelectedCategory(item);
+                    });
+                    const results = performSearch(searchTerm, filteredItemsForSearch);
+                    displayResults(results, searchTerm, resultsContainer);
+                }
+            });
+        });
+
+        // Aplicar filtro inicial
+        applyCategoryFilter();
+    }
     
     // Función para escapar caracteres especiales en una expresión regular
     function escapeRegExp(string) {
@@ -749,10 +840,35 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Tu carrito está vacío');
             return;
         }
+
+        // Obtener modalidad de pedido y datos adicionales
+        const orderTypeEl = document.querySelector('input[name="orderType"]:checked');
+        const orderType = orderTypeEl ? orderTypeEl.value : (CHECKOUT_MODE === 'mesa' ? 'mesa' : 'direccion');
+        const mesaNumberEl = document.getElementById('mesa-number');
+        const addressEl = document.getElementById('delivery-address');
+        const mesaNumber = mesaNumberEl ? (mesaNumberEl.value || '').trim() : '';
+        const address = addressEl ? (addressEl.value || '').trim() : '';
+
+        if (orderType === 'mesa' && !mesaNumber) {
+            alert('Por favor, ingresa el número de mesa.');
+            return;
+        }
+        if (orderType === 'direccion' && !address) {
+            alert('Por favor, ingresa la dirección de entrega.');
+            return;
+        }
         
         // Crear el mensaje de WhatsApp
         let mensaje = '¡Hola! 👋 Espero que estés muy bien.\n\n';
         mensaje += '🛒 Me gustaría realizar el siguiente pedido:\n\n';
+
+        // Modalidad de pedido
+        mensaje += `📍 Modalidad: ${orderType === 'mesa' ? 'Mesa' : 'Dirección'}\n`;
+        if (orderType === 'mesa') {
+            mensaje += `   🪑 Mesa N°: ${mesaNumber}\n\n`;
+        } else {
+            mensaje += `   🏠 Dirección: ${address}\n\n`;
+        }
         
         // Agregar cada producto del carrito
         cart.forEach((item, index) => {
@@ -764,10 +880,23 @@ document.addEventListener('DOMContentLoaded', function() {
             mensaje += '\n';
         });
         
-        // Agregar el total
-        const totalText = cartTotalPrice.textContent;
-        mensaje += `💰 TOTAL: ${totalText}\n\n`;
-        mensaje += '¿Podrías confirmarme la disponibilidad y el método de entrega?\n\n';
+        // Agregar el total y sugerencia de propina si corresponde
+        const totalNumber = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const totalText = '$' + parseInt(totalNumber).toLocaleString('es-AR') + ' ARS';
+        mensaje += `💰 TOTAL (sin propina): ${totalText}\n`;
+        if (orderType === 'mesa') {
+            const tip = Math.round(totalNumber * 0.10);
+            const tipText = '$' + parseInt(tip).toLocaleString('es-AR') + ' ARS';
+            const totalWithTip = totalNumber + tip;
+            const totalWithTipText = '$' + parseInt(totalWithTip).toLocaleString('es-AR') + ' ARS';
+            mensaje += `💁 Propina sugerida (10%): ${tipText}\n`;
+            mensaje += `🍽️ TOTAL con propina sugerida: ${totalWithTipText}\n\n`;
+        } else {
+            mensaje += `\n`;
+        }
+        if (orderType !== 'mesa') {
+            mensaje += '¿Podrías confirmarme la disponibilidad y el método de entrega?\n\n';
+        }
         mensaje += '¡Muchas gracias! 😊';
         
         // Codificar el mensaje para URL
@@ -808,8 +937,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Mostrar la sección de resultados
         searchResultsSection.classList.add('active');
         
-        // Realizar la búsqueda
-        const results = performSearch(searchTerm, searchableItems);
+        // Realizar la búsqueda aplicando filtro de categoría
+        const filteredItemsForSearch = Array.from(searchableItems).filter(item => itemMatchesSelectedCategory(item));
+        const results = performSearch(searchTerm, filteredItemsForSearch);
         
         // Mostrar los resultados
         displayResults(results, searchTerm, resultsContainer);
@@ -856,10 +986,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalAddToCartBtn = document.getElementById('modal-add-to-cart-btn');
     const closeModal = document.querySelector('.close-modal');
 
-    // Verificar si los elementos del modal existen
-    if (!productModal) {
-        console.error('Modal de producto no encontrado');
-    }
+    // Algunas páginas no incluyen el modal; continuar sin error
+    // if (!productModal) {
+    //     console.debug('Página sin modal de producto');
+    // }
 
     // Datos detallados de productos
     const productDetails = {
@@ -1022,14 +1152,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Obtener información del producto
+            // Obtener información del producto de forma segura
             const productCard = this;
             const addToCartBtn = productCard.querySelector('.add-to-cart-btn');
-            const productId = addToCartBtn.getAttribute('data-id');
-            const productName = addToCartBtn.getAttribute('data-name');
-            const productPrice = addToCartBtn.getAttribute('data-price');
-            const productDescription = productCard.querySelector('.product-description').textContent;
-            const productImageSrc = productCard.querySelector('.product-image img').src;
+            if (!addToCartBtn) {
+                console.debug('Tarjeta sin botón add-to-cart, se omite modal');
+                return;
+            }
+            const productId = addToCartBtn.getAttribute('data-id') || '';
+            const productName = addToCartBtn.getAttribute('data-name') || '';
+            const productPrice = addToCartBtn.getAttribute('data-price') || '0';
+            const descEl = productCard.querySelector('.product-description');
+            const productDescription = descEl ? descEl.textContent : '';
+            const imgEl = productCard.querySelector('.product-image img');
+            const productImageSrc = imgEl ? imgEl.src : '';
             
             // Crear objeto con datos del producto
             const productData = {

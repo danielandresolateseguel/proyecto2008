@@ -1760,6 +1760,32 @@ section h2 {
     }
 }
 
+/* Títulos sutiles unificados para index.html (Productos, Info y Recomendados por interés) */
+#products-index-title.section-title,
+#store-info-index-title.section-title,
+#interest-products-index-title.section-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #5a6f90;
+    letter-spacing: 0.2px;
+    margin: 0 16px 10px;
+    padding-bottom: 0;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+#products-index-title.section-title::before,
+#store-info-index-title.section-title::before,
+#interest-products-index-title.section-title::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7c5cff, #b197fc);
+    box-shadow: 0 0 8px rgba(124, 92, 255, 0.35);
+}
+
 /* Sección de descuentos especiales */
 .special-discounts {
     margin: 20px 0 20px 0;

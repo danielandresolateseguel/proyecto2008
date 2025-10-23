@@ -11,7 +11,7 @@
     <link rel="preload" as="image" href="Imagenes/xbox.png">
     <link rel="preload" as="image" href="Imagenes/asus-proart-p16.png">
 </head>
-<body>
+<body class="sector-general" data-category="general" data-vendor="site-base">
     <header>
         <!-- Primera línea: Epa!, botones de contacto y carrito -->
         <div class="header-top">
@@ -465,7 +465,7 @@
 
         <!-- Productos de ejemplo por interés (justo debajo de los existentes) -->
         <section class="products interest-products searchable-section">
-            <h2 class="section-title">Recomendados por interés</h2>
+            <h2 id="interest-products-index-title" class="section-title">Recomendados por interés</h2>
             <div class="products-grid">
                 <!-- 2x1 -->
                 <div class="product-card searchable-item" id="interest-product-2x1">
@@ -617,5 +617,12 @@
 
     <script src="scrip.js?v=46"></script>
     <script src="image-loader.js"></script>
+
+    <!-- Botón de prueba: ir a página de Gastronomía -->
+    <div style="text-align:center; margin: 16px 0;">
+        <button id="go-gastronomia-test" onclick="location.href='gastronomia.html'" style="padding:10px 14px; border-radius:10px; border:1px solid #ccc; cursor:pointer;">
+            Probar Gastronomía
+        </button>
+    </div>
 </body>
 </html>
