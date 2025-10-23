@@ -2,8 +2,8 @@ import http.server
 import socketserver
 import os
 
-# Cambiar al directorio del proyecto
-os.chdir(r'C:\Daniel Olate\Proyecto 20.08')
+# Cambiar al directorio del proyecto correcto (carpeta que contiene los HTML/CSS)
+os.chdir(r'C:\Daniel Olate\Proyecto 20.08\Proyecto 20.08')
 
 # Configurar el servidor
 PORT = 8000
