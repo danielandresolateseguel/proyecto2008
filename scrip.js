@@ -185,18 +185,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function applyCategoryFilter() {
+        const menuSection = document.getElementById('menu-gastronomia');
         searchableItems.forEach(item => {
-            // Excluir los platos destacados de los filtros de categoría
-            const featuredSection = document.getElementById('featured-dishes');
-            const isInFeaturedSection = featuredSection && featuredSection.contains(item);
-            
-            if (isInFeaturedSection) {
-                // Los platos destacados siempre se muestran, no se aplican filtros
+            const isInMenuSection = menuSection && menuSection.contains(item);
+            if (!isInMenuSection) {
+                // No aplicar filtros fuera del menú gastronomía (ej. recomendados por interés)
                 item.style.display = '';
-            } else {
-                // Solo aplicar filtros a los elementos del menú principal
-                item.style.display = itemMatchesSelectedCategory(item) ? '' : 'none';
+                return;
             }
+            item.style.display = itemMatchesSelectedCategory(item) ? '' : 'none';
         });
     }
 
@@ -213,12 +210,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 const searchTerm = searchInput.value.trim().toLowerCase();
                 const searchResultsSection = document.querySelector('.search-results');
                 if (searchTerm !== '' && searchResultsSection.classList.contains('active')) {
-                    // Excluir platos destacados de la búsqueda filtrada
-                    const featuredSection = document.getElementById('featured-dishes');
-                    const filteredItemsForSearch = Array.from(searchableItems).filter(item => {
-                        const isInFeaturedSection = featuredSection && featuredSection.contains(item);
-                        return !isInFeaturedSection && itemMatchesSelectedCategory(item);
+                    // Aplicar búsqueda incluyendo recomendados por interés y filtrando solo el menú gastronomía
+                    const menuSection = document.getElementById('menu-gastronomia');
+                    const interestSection = document.querySelector('.interest-products');
+
+                    const menuItemsForSearch = Array.from(searchableItems).filter(item => {
+                        const isInMenuSection = menuSection && menuSection.contains(item);
+                        return isInMenuSection && itemMatchesSelectedCategory(item);
                     });
+
+                    const interestItemsForSearch = Array.from(searchableItems).filter(item => {
+                        const isInInterestSection = interestSection && interestSection.contains(item);
+                        return isInInterestSection;
+                    });
+
+                    const filteredItemsForSearch = [...menuItemsForSearch, ...interestItemsForSearch];
                     const results = performSearch(searchTerm, filteredItemsForSearch);
                     displayResults(results, searchTerm, resultsContainer);
                 }
@@ -937,8 +943,21 @@ document.addEventListener('DOMContentLoaded', function() {
         // Mostrar la sección de resultados
         searchResultsSection.classList.add('active');
         
-        // Realizar la búsqueda aplicando filtro de categoría
-        const filteredItemsForSearch = Array.from(searchableItems).filter(item => itemMatchesSelectedCategory(item));
+        // Realizar la búsqueda incluyendo recomendados por interés, y aplicar filtro solo al menú gastronomía
+        const menuSection = document.getElementById('menu-gastronomia');
+        const interestSection = document.querySelector('.interest-products');
+
+        const menuItemsForSearch = Array.from(searchableItems).filter(item => {
+            const isInMenuSection = menuSection && menuSection.contains(item);
+            return isInMenuSection && itemMatchesSelectedCategory(item);
+        });
+
+        const interestItemsForSearch = Array.from(searchableItems).filter(item => {
+            const isInInterestSection = interestSection && interestSection.contains(item);
+            return isInInterestSection;
+        });
+
+        const filteredItemsForSearch = [...menuItemsForSearch, ...interestItemsForSearch];
         const results = performSearch(searchTerm, filteredItemsForSearch);
         
         // Mostrar los resultados
@@ -2085,6 +2104,73 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 150);
     });
 
+    // Configuración del botón flotante "volver a destacados" (sector Gastronomía)
+    const backToFeaturedBtn = document.getElementById('back-to-featured-float');
+    if (backToFeaturedBtn && document.body.classList.contains('sector-gastronomia')) {
+        backToFeaturedBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const featured = document.getElementById('featured-dishes');
+            if (featured) {
+                featured.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            backToFeaturedBtn.classList.remove('visible');
+        });
+
+        const interestProductsSection = document.querySelector('.interest-products');
+        if (interestProductsSection) {
+            let backToFeaturedTimer = null;
+            let scrollActivated = false;
+
+            const featuredObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        if (backToFeaturedTimer) clearTimeout(backToFeaturedTimer);
+                        backToFeaturedTimer = setTimeout(() => {
+                            if (!scrollActivated) {
+                                backToFeaturedBtn.classList.add('visible');
+                            }
+                        }, 5000);
+                    } else {
+                        if (backToFeaturedTimer) {
+                            clearTimeout(backToFeaturedTimer);
+                            backToFeaturedTimer = null;
+                        }
+                        if (!scrollActivated) {
+                            backToFeaturedBtn.classList.remove('visible');
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            featuredObserver.observe(interestProductsSection);
+
+            function updateFloatVisibilityOnScroll() {
+                const interestTop = interestProductsSection.offsetTop;
+                const interestBottom = interestTop + interestProductsSection.offsetHeight;
+                const y = window.scrollY;
+
+                if (y > interestBottom) {
+                    scrollActivated = true;
+                    backToFeaturedBtn.classList.add('visible');
+                } else if (y < interestTop) {
+                    scrollActivated = false;
+                    backToFeaturedBtn.classList.remove('visible');
+                }
+            }
+
+            window.addEventListener('scroll', () => {
+                clearTimeout(window.__btfScrollDebounce);
+                window.__btfScrollDebounce = setTimeout(() => {
+                    updateFloatVisibilityOnScroll();
+                }, 100);
+            });
+
+            // Estado inicial según posición de scroll
+            updateFloatVisibilityOnScroll();
+        }
+    }
+
     // Hacer funciones globales para acceso desde HTML
     window.toggleAutoPlay = toggleAutoPlay;
     window.scrollDiscounts = scrollDiscounts;
@@ -2257,6 +2343,34 @@ function resumeDiscountAutoScroll() {
 }
 
 // Inicializar comportamiento para la sección de intereses
+function getInterestProductMap() {
+    const category = (document.body && document.body.dataset && document.body.dataset.category || '').toLowerCase();
+
+    const baseMap = {
+        '2x1': 'interest-product-2x1',
+        'Liquidaciones': 'interest-product-liquidaciones',
+        'Destacados': 'interest-product-destacados',
+        'Nuevo': 'interest-product-nuevo',
+        'Más vendidos': 'interest-product-mas-vendidos'
+    };
+
+    if (category === 'gastronomia') {
+        return {
+            '2x1': 'interest-product-2x1',
+            'Liquidaciones': 'interest-product-liquidaciones',
+            'Destacados': 'interest-product-destacados',
+            'Nuevo': 'interest-product-nuevo',
+            'Más vendidos': 'interest-product-mas-vendidos',
+            'Entradas rápidas': 'interest-product-nuevo',
+            'Promociones': 'interest-product-liquidaciones',
+            'Especialidad de la casa': 'interest-product-destacados',
+            'Combos': 'interest-product-mas-vendidos'
+        };
+    }
+
+    return baseMap;
+}
+
 function initInterestStrip() {
     const items = document.querySelectorAll('.interest-item');
     const searchForm = document.getElementById('search-form');
@@ -2265,13 +2379,7 @@ function initInterestStrip() {
     const backToTopBtn = document.getElementById('back-to-top-float');
 
     // Mapeo de círculos de interés a productos de ejemplo
-    const interestProductMap = {
-        '2x1': 'interest-product-2x1',
-        'Liquidaciones': 'interest-product-liquidaciones',
-        'Destacados': 'interest-product-destacados',
-        'Nuevo': 'interest-product-nuevo',
-        'Más vendidos': 'interest-product-mas-vendidos'
-    };
+    const interestProductMap = getInterestProductMap();
 
     if (!items.length || !searchForm || !searchInput) return;
 

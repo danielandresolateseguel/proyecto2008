@@ -254,6 +254,50 @@
             </div>
         </section>
 
+        <!-- Inicio: Sección de intereses en tira (círculos) -->
+        <section class="interest-section" id="interest-index" aria-labelledby="interest-section-title">
+            <h2 id="interest-section-title" class="section-title">Explora y aprovecha</h2>
+            <div class="interest-strip" role="list">
+                <button class="interest-item" role="listitem" data-term="Entradas rápidas" aria-label="Ver entradas rápidas">
+                    <span class="interest-circle">
+                        <i class="fas fa-utensils" aria-hidden="true"></i>
+                    </span>
+                    <span class="interest-label">Entradas rápidas</span>
+                </button>
+                <button class="interest-item" role="listitem" data-term="Promociones" aria-label="Ver promociones">
+                    <span class="interest-circle">
+                        <i class="fas fa-tags" aria-hidden="true"></i>
+                    </span>
+                    <span class="interest-label">Promociones</span>
+                </button>
+                <button class="interest-item" role="listitem" data-term="Especialidad de la casa" aria-label="Ver especialidad de la casa">
+                    <span class="interest-circle">
+                        <i class="fas fa-award" aria-hidden="true"></i>
+                    </span>
+                    <span class="interest-label">Especialidad de la casa</span>
+                </button>
+                <button class="interest-item" role="listitem" data-term="Combos" aria-label="Ver combos">
+                    <span class="interest-circle">
+                        <i class="fas fa-layer-group" aria-hidden="true"></i>
+                    </span>
+                    <span class="interest-label">Combos</span>
+                </button>
+                <button class="interest-item" role="listitem" data-term="2x1" aria-label="Ver promociones 2x1">
+                    <span class="interest-circle">
+                        <i class="fas fa-gift" aria-hidden="true"></i>
+                    </span>
+                    <span class="interest-label">2x1</span>
+                </button>
+            </div>
+            <!-- Flechas de navegación para móviles -->
+            <button class="interest-nav-btn prev" aria-label="Anterior">
+                <i class="fas fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <button class="interest-nav-btn next" aria-label="Siguiente">
+                <i class="fas fa-chevron-right" aria-hidden="true"></i>
+            </button>
+        </section>
+        <!-- Fin: Sección de intereses en tira (círculos) -->
 
         <!-- Carrito de compras -->
         <div id="shopping-cart" class="shopping-cart">
@@ -387,7 +431,128 @@
             </div>
         </section>
 
+        <!-- Productos de ejemplo por interés (justo debajo del menú de gastronomía) -->
+        <section class="products interest-products searchable-section">
+            <h2 id="interest-products-index-title" class="section-title">Recomendados por interés</h2>
+            <div class="products-grid">
+                <!-- 2x1 -->
+                <div class="product-card searchable-item" id="interest-product-2x1">
+                    <div class="interest-badge">2x1</div>
+                    <div class="product-image">
+                        <img src="Imagenes/xbox.png" alt="Pizza Margarita 2x1" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Pizza Margarita 2x1</h3>
+                        <p class="product-description">Promo 2x1 en pizzas Margarita; ideal para compartir.</p>
+                        <p class="product-price">$4,500 ARS</p>
+                        <button class="add-to-cart-btn" data-id="i1" data-name="Pizza Margarita 2x1" data-price="4500">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Liquidaciones -->
+                <div class="product-card searchable-item" id="interest-product-liquidaciones">
+                    <div class="interest-badge">Promoción</div>
+                    <div class="product-image">
+                        <img src="Imagenes/asus-proart-p16.png" alt="Empanadas de Carne (Promo)" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Empanadas de Carne (Promo)</h3>
+                        <p class="product-description">Docena de empanadas a precio promocional.</p>
+                        <p class="product-price">$6,200 ARS</p>
+                        <button class="add-to-cart-btn" data-id="i2" data-name="Empanadas de Carne (Promo)" data-price="6200">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Destacados -->
+                <div class="product-card searchable-item" id="interest-product-destacados">
+                    <div class="interest-badge">Especialidad</div>
+                    <div class="product-image">
+                        <img src="Imagenes/Xbox-01-copia-1024x1024.png" alt="Lomo a lo Pobre (Especialidad)" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Lomo a lo Pobre (Especialidad)</h3>
+                        <p class="product-description">Clásico de la casa con huevo, cebolla y papas.</p>
+                        <p class="product-price">$7,800 ARS</p>
+                        <button class="add-to-cart-btn" data-id="i3" data-name="Lomo a lo Pobre (Especialidad)" data-price="7800">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Recién llegados -->
+                <div class="product-card searchable-item" id="interest-product-nuevo">
+                    <div class="interest-badge">Entradas</div>
+                    <div class="product-image">
+                        <img src="Imagenes/images.jfif" alt="Papas Bravas" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Papas Bravas</h3>
+                        <p class="product-description">Entradas con salsa picante y alioli.</p>
+                        <p class="product-price">$3,200 ARS</p>
+                        <button class="add-to-cart-btn" data-id="i4" data-name="Papas Bravas" data-price="3200">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Más vendidos -->
+                <div class="product-card searchable-item" id="interest-product-mas-vendidos">
+                    <div class="interest-badge">Combo</div>
+                    <div class="product-image">
+                        <img src="Imagenes/descarga.jfif" alt="Combo Burger + Papas + Bebida" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Combo Burger + Papas + Bebida</h3>
+                        <p class="product-description">Hamburguesa clásica con papas y bebida.</p>
+                        <p class="product-price">$5,900 ARS</p>
+                        <button class="add-to-cart-btn" data-id="i5" data-name="Combo Burger + Papas + Bebida" data-price="5900">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content searchable-section">
+            <h2 id="store-info-gastronomia-title" class="section-title">Información del Restaurante</h2>
+            <div class="content-items">
+                <article id="articulo1" class="searchable-item">
+                    <h3>Sobre Nosotros</h3>
+                    <p>Somos un restaurante especializado en gastronomía de alta calidad. Ofrecemos platos tradicionales y modernos preparados con ingredientes frescos y seleccionados.</p>
+                    <p>Nuestro compromiso es brindar la mejor experiencia gastronómica a nuestros comensales.</p>
+                </article>
+
+                <article id="articulo2" class="searchable-item">
+                    <h3>Política de Delivery</h3>
+                    <p>Realizamos entregas a domicilio en toda la ciudad. Los pedidos se preparan frescos y el tiempo de entrega es de 30-45 minutos dependiendo de tu ubicación.</p>
+                    <p>Ofrecemos delivery gratuito en pedidos superiores a $8,000.</p>
+                </article>
+
+                <article id="articulo3" class="searchable-item">
+                    <h3>Reservas y Cancelaciones</h3>
+                    <p>Aceptamos reservas para mesas y eventos especiales. Las cancelaciones deben realizarse con al menos 2 horas de anticipación.</p>
+                    <p>Para realizar una reserva o consultar disponibilidad, contacta con nuestro servicio de atención al cliente.</p>
+                </article>
+            </div>
+        </section>
+
     </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>🍽️ Epa! Gastronomía</h4>
+                <p>Tu lugar de confianza para sabores auténticos y platos de calidad.</p>
+            </div>
+            <div class="footer-section">
+                <h4>📞 Contacto Rápido</h4>
+                <p><i class="fab fa-whatsapp"></i> WhatsApp: +54 9 261 586-3590</p>
+                <p><i class="fas fa-envelope"></i> info@epatienda.com</p>
+            </div>
+            <div class="footer-section">
+                <h4>📍 Ubicación</h4>
+                <p>Av. San Martín 1234, Mendoza</p>
+                <p>Lun-Dom: 12:00-23:00</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Epa! Gastronomía. Todos los derechos reservados.</p>
+        </div>
+    </footer>
 
     <!-- Modal de producto (compatible con scrip.js) -->
     <div id="product-modal" style="display: none;" aria-hidden="true" role="dialog">
@@ -408,6 +573,11 @@
       </div>
     </div>
 
-    <script src="scrip.js?v=51"></script>
+    <!-- Botón flotante para volver a Platos destacados -->
+    <button id="back-to-featured-float" class="back-to-top-float" aria-label="Volver a Platos destacados" title="Volver a Platos destacados" style="left: 16px; right: auto;">
+        <i class="fas fa-arrow-up" aria-hidden="true"></i>
+    </button>
+
+    <script src="scrip.js?v=53"></script>
 </body>
 </html>
