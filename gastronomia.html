@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador Web con Carrito - Gastronomía</title>
+    <link rel="stylesheet" href="style.css?v=51">
+    <link rel="stylesheet" href="image-optimizations.css">
+    <link rel="stylesheet" href="gastronomia.css?v=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preload" as="image" href="Imagenes/asus-proart-p16.png">
+    <link rel="preload" as="image" href="Imagenes/xbox.png">
+    <link rel="preload" as="image" href="Imagenes/asus-proart-p16.png">
+</head>
+<body class="sector-gastronomia" data-category="gastronomia" data-vendor="gastronomiaA">
+    <header>
+        <!-- Primera línea: Epa!, botones de contacto y carrito -->
+        <div class="header-top">
+            <h1>Epa!</h1>
+            <div class="header-contact">
+                <div class="contact-item-compact" data-tooltip="+54 9 261 586-3590">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>+54 9 261 586-3590</span>
+                </div>
+                <div class="contact-item-compact" data-tooltip="Mendoza, Argentina">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Mendoza, Argentina</span>
+                </div>
+                <div class="contact-item-compact" data-tooltip="Lun-Dom: 12:00-23:00">
+                    <i class="fas fa-clock"></i>
+                    <span>Lun-Dom: 12:00-23:00</span>
+                </div>
+            </div>
+            <div class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count">0</span>
+            </div>
+        </div>
+        <!-- Segunda línea: Búsqueda -->
+        <div class="header-bottom">
+            <div class="search-container">
+                <form id="search-form">
+                    <input type="text" id="search-input" placeholder="Buscar en el menú..." autocomplete="off">
+                    <button type="submit">Buscar</button>
+                    <button type="button" id="clear-search-btn" class="clear-search-btn" style="display: none;">Limpiar</button>
+                </form>
+                <!-- Dropdown de sugerencias inteligentes -->
+                <div id="search-suggestions-dropdown" class="search-suggestions-dropdown">
+                    <div class="suggestions-section">
+                        <div class="suggestions-header">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Sugerencias</span>
+                        </div>
+                        <div id="suggestions-list" class="suggestions-list"></div>
+                    </div>
+                    <div class="history-section">
+                        <div class="suggestions-header">
+                            <div class="header-left">
+                                <i class="fas fa-history"></i>
+                                <span>Búsquedas recientes</span>
+                            </div>
+                            <button id="clear-all-history" class="clear-all-btn" title="Limpiar todo el historial">
+                                <i class="fas fa-trash-alt"></i>
+                                <span>Limpiar todo</span>
+                            </button>
+                        </div>
+                        <div id="history-list" class="suggestions-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- Resultados de búsqueda -->
+        <section class="search-results">
+            <div id="results-container">
+                <!-- Los resultados de búsqueda se mostrarán aquí -->
+                <p class="no-results">Explora nuestro menú o busca tu plato favorito</p>
+            </div>
+        </section>
+
+        <!-- Carrusel de imágenes -->
+        <section class="carousel-section">
+            <div class="carousel-container">
+                <div class="carousel-slides">
+                    <div class="carousel-slide active">
+                        <img src="Imagenes/0NvnRmTfq_720x0__1.jpg" alt="Sabor auténtico">
+                        <div class="carousel-content">
+                            <h2>Sabor auténtico</h2>
+                            <p>Platos preparados con ingredientes frescos y seleccionados</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="Imagenes/1366_2000.jpeg" alt="Promos del día">
+                        <div class="carousel-content">
+                            <h2>Promos del día</h2>
+                            <p>Combinaciones imperdibles para compartir</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="Imagenes/enviogratis-cms.gif" alt="Retiro y entrega">
+                        <div class="carousel-content">
+                            <h2>Retiro y entrega</h2>
+                            <p>Elegí retirar en local o recibir en tu domicilio</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botones de navegación -->
+                <button class="carousel-btn carousel-prev" onclick="previousSlide()" aria-label="Imagen anterior">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-btn carousel-next" onclick="nextSlide()" aria-label="Siguiente imagen">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                
+                <!-- Indicadores de puntos -->
+                <div class="carousel-indicators">
+                    <button class="indicator active" onclick="goToSlide(0)" aria-label="Ir al slide 1"></button>
+                    <button class="indicator" onclick="goToSlide(1)" aria-label="Ir al slide 2"></button>
+                    <button class="indicator" onclick="goToSlide(2)" aria-label="Ir al slide 3"></button>
+                </div>
+                
+                <!-- Control de auto-play con indicador de progreso SVG -->
+                <div class="carousel-controls">
+                    <div class="carousel-play-button" 
+                         onclick="toggleAutoPlay()" 
+                         aria-label="Pausar/Reanudar reproducción automática del carrusel"
+                         role="button"
+                         tabindex="0"
+                         onkeydown="if(event.key==='Enter'||event.key===' '){toggleAutoPlay();event.preventDefault();}"
+                         title="Click para pausar/reanudar reproducción automática">
+                        <svg class="progress-ring" viewBox="0 0 36 36">
+                            <circle class="progress-ring-circle" cx="18" cy="18" r="16" />
+                            <circle class="progress-ring-progress" cx="18" cy="18" r="16" />
+                        </svg>
+                        <div class="play-button-center">
+                            <i id="play-pause-icon" class="fas fa-pause" aria-hidden="true"></i>
+                        </div>
+                        <span class="sr-only" id="autoplay-status">Reproducción automática activa</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Sección de Platos Destacados -->
+        <section class="special-discounts" id="featured-dishes">
+            <h2 class="section-title">Platos destacados</h2>
+            <div class="discounts-wrapper">
+                <div class="discounts-container">
+                    <div class="discounts-grid">
+                        <!-- Destacado 1 -->
+                        <div class="product-card discount-card searchable-item" id="destacado1">
+                            <div class="product-image">
+                                <img src="Imagenes/Xbox-01-copia-1024x1024.png" alt="Pizza Napolitana" width="800" height="600" loading="lazy">
+                            </div>
+                            <div class="product-info">
+                                <h3>Pizza Napolitana</h3>
+                                <p class="product-description">Tomate, mozzarella y orégano seleccionados.</p>
+                                <div class="price-container">
+                                    <p class="product-price">$6,800 ARS</p>
+                                </div>
+                                <button class="add-to-cart-btn" data-id="dest1" data-name="Pizza Napolitana" data-price="6800">Añadir al carrito</button>
+                            </div>
+                        </div>
+
+                        <!-- Destacado 2 -->
+                        <div class="product-card discount-card searchable-item" id="destacado2">
+                            <div class="product-image">
+                                <img src="Imagenes/Xbox-01-copia-1024x1024.png" alt="Milanesa con puré" width="800" height="600" loading="lazy">
+                            </div>
+                            <div class="product-info">
+                                <h3>Milanesa con puré</h3>
+                                <p class="product-description">Clásico casero con papas cremosas.</p>
+                                <div class="price-container">
+                                    <p class="product-price">$5,400 ARS</p>
+                                </div>
+                                <button class="add-to-cart-btn" data-id="dest2" data-name="Milanesa con puré" data-price="5400">Añadir al carrito</button>
+                            </div>
+                        </div>
+
+                        <!-- Destacado 3 -->
+                        <div class="product-card discount-card searchable-item" id="destacado3">
+                            <div class="product-image">
+                                <img src="Imagenes/Xbox-01-copia-1024x1024.png" alt="Ensalada César" width="800" height="600" loading="lazy">
+                            </div>
+                            <div class="product-info">
+                                <h3>Ensalada César</h3>
+                                <p class="product-description">Lechuga fresca, pollo, crutones y aderezo.</p>
+                                <div class="price-container">
+                                    <p class="product-price">$4,930 ARS</p>
+                                </div>
+                                <button class="add-to-cart-btn" data-id="dest3" data-name="Ensalada César" data-price="4930">Añadir al carrito</button>
+                            </div>
+                        </div>
+
+                        <!-- Destacado 4 -->
+                        <div class="product-card discount-card searchable-item" id="destacado4">
+                            <div class="product-image">
+                                <img src="Imagenes/Xbox-01-copia-1024x1024.png" alt="Ravioles de ricota" width="800" height="600" loading="lazy">
+                            </div>
+                            <div class="product-info">
+                                <h3>Ravioles de ricota</h3>
+                                <p class="product-description">Caseros, con salsa pomodoro y albahaca.</p>
+                                <div class="price-container">
+                                    <p class="product-price">$6,396 ARS</p>
+                                </div>
+                                <button class="add-to-cart-btn" data-id="dest4" data-name="Ravioles de ricota" data-price="6396">Añadir al carrito</button>
+                            </div>
+                        </div>
+
+                        <!-- Destacado 5 -->
+                        <div class="product-card discount-card searchable-item" id="destacado5">
+                            <div class="product-image">
+                                <img src="Imagenes/Xbox-01-copia-1024x1024.png" alt="Hamburguesa Gourmet" width="800" height="600" loading="lazy">
+                            </div>
+                            <div class="product-info">
+                                <h3>Hamburguesa Gourmet</h3>
+                                <p class="product-description">Doble carne, cheddar, panceta y salsa especial.</p>
+                                <div class="price-container">
+                                    <p class="product-price">$7,020 ARS</p>
+                                </div>
+                                <button class="add-to-cart-btn" data-id="dest5" data-name="Hamburguesa Gourmet" data-price="7020">Añadir al carrito</button>
+                            </div>
+                        </div>
+
+                        <!-- Destacado 6 -->
+                        <div class="product-card discount-card searchable-item" id="destacado6">
+                            <div class="product-image">
+                                <img src="Imagenes/Xbox-01-copia-1024x1024.png" alt="Tarta de chocolate" width="800" height="600" loading="lazy">
+                            </div>
+                            <div class="product-info">
+                                <h3>Tarta de chocolate</h3>
+                                <p class="product-description">Postre intenso con cacao y ganache suave.</p>
+                                <div class="price-container">
+                                    <p class="product-price">$3,960 ARS</p>
+                                </div>
+                                <button class="add-to-cart-btn" data-id="dest6" data-name="Tarta de chocolate" data-price="3960">Añadir al carrito</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de navegación -->
+                <button class="discounts-nav-btn prev" onclick="scrollDiscounts('left')" aria-label="Anterior">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="discounts-nav-btn next" onclick="scrollDiscounts('right')" aria-label="Siguiente">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Inicio: Sección de intereses en tira (círculos) -->
+        <section class="interest-section" id="interest-index" aria-labelledby="interest-section-title">
+            <h2 id="interest-section-title" class="section-title">Explora y aprovecha</h2>
+            <div class="interest-strip" role="list">
+                <button class="interest-item" role="listitem" data-term="Entradas rápidas" aria-label="Ver entradas rápidas">
+                    <span class="interest-circle">
+                        <i class="fas fa-utensils" aria-hidden="true"></i>
+                    </span>
+                    <span class="interest-label">Entradas rápidas</span>
+                </button>
+                <button class="interest-item" role="listitem" data-term="Promociones" aria-label="Ver promociones">
+                    <span class="interest-circle">
+                        <i class="fas fa-tags" aria-hidden="true"></i>
+                    </span>
+                    <span class="interest-label">Promociones</span>
+                </button>
+                <button class="interest-item" role="listitem" data-term="Especialidad de la casa" aria-label="Ver especialidad de la casa">
+                    <span class="interest-circle">
+                        <i class="fas fa-award" aria-hidden="true"></i>
+                    </span>
+                    <span class="interest-label">Especialidad de la casa</span>
+                </button>
+                <button class="interest-item" role="listitem" data-term="Combos" aria-label="Ver combos">
+                    <span class="interest-circle">
+                        <i class="fas fa-layer-group" aria-hidden="true"></i>
+                    </span>
+                    <span class="interest-label">Combos</span>
+                </button>
+                <button class="interest-item" role="listitem" data-term="2x1" aria-label="Ver promociones 2x1">
+                    <span class="interest-circle">
+                        <i class="fas fa-gift" aria-hidden="true"></i>
+                    </span>
+                    <span class="interest-label">2x1</span>
+                </button>
+            </div>
+            <!-- Flechas de navegación para móviles -->
+            <button class="interest-nav-btn prev" aria-label="Anterior">
+                <i class="fas fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <button class="interest-nav-btn next" aria-label="Siguiente">
+                <i class="fas fa-chevron-right" aria-hidden="true"></i>
+            </button>
+        </section>
+        <!-- Fin: Sección de intereses en tira (círculos) -->
+
+        <!-- Carrito de compras -->
+        <div id="shopping-cart" class="shopping-cart">
+            <div class="cart-header">
+                <h2>Carrito de Compras</h2>
+                <button id="close-cart" class="close-cart"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="cart-items" class="cart-items">
+                <p class="empty-cart">Tu carrito está vacío</p>
+            </div>
+            <div class="cart-order-options">
+                <label class="order-type-label">Pedido para:</label>
+                <div class="order-type-switch">
+                    <label><input type="radio" name="orderType" value="mesa" checked> Mesa</label>
+                    <label><input type="radio" name="orderType" value="direccion"> Dirección</label>
+                </div>
+                <div class="order-extra order-mesa" id="order-mesa-fields">
+                    <label for="mesa-number">Número de mesa</label>
+                    <input type="text" id="mesa-number" placeholder="Ej: 12" inputmode="numeric">
+                </div>
+                <div class="order-extra order-direccion" id="order-address-fields" style="display: none;">
+                    <label for="delivery-address">Dirección de entrega</label>
+                    <input type="text" id="delivery-address" placeholder="Calle, altura, referencias">
+                </div>
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cart-total-price">$0.00 ARS</span>
+                </div>
+                <button id="checkout-btn" class="checkout-btn">🍽️ Realizar pedido</button>
+                <button id="clear-cart-btn" class="clear-cart-btn">Vaciar carrito</button>
+            </div>
+        </div>
+
+        <!-- Carrito flotante -->
+        <div class="floating-cart" id="floating-cart">
+            <div class="cart-icon-float">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count-float" id="floating-cart-count">0</span>
+            </div>
+            <span class="cart-text">Ver carrito</span>
+        </div>
+
+        <!-- Filtro de categorías -->
+        <section class="category-filter" id="category-filter">
+            <button class="filter-btn active" data-filter="todos">Todos</button>
+            <button class="filter-btn" data-filter="sandwich">Sándwich</button>
+            <button class="filter-btn" data-filter="pizzas">Pizzas</button>
+            <button class="filter-btn" data-filter="comen-dos">Comen dos</button>
+            <button class="filter-btn" data-filter="al-plato">Al plato</button>
+            <button class="filter-btn" data-filter="bebidas-cocteles">Bebidas y Cócteles</button>
+            <button class="filter-btn" data-filter="postres">Postres</button>
+        </section>
+
+        <!-- Catálogo gastronómico en layout vertical -->
+        <section class="products searchable-section" id="menu-gastronomia">
+            <h2 class="section-title">Menú Gastronomía</h2>
+            <div class="products-grid">
+                <div class="product-card searchable-item" id="plato1" data-food-category="pizzas, comen-dos">
+                    <div class="product-image">
+                        <img src="Imagenes/Xbox-01-copia-1024x1024.png" alt="Pizza Margarita" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Pizza Margarita</h3>
+                        <p class="product-description">Mozzarella, tomate y albahaca fresca.</p>
+                        <p class="product-price">$6,500 ARS</p>
+                        <button class="add-to-cart-btn" data-id="plato1" data-name="Pizza Margarita" data-price="6500">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <div class="product-card searchable-item" id="plato2" data-food-category="sandwich, comen-dos">
+                    <div class="product-image">
+                        <img src="Imagenes/Xbox-01-copia-1024x1024.png" alt="Empanadas" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Empanadas (docena)</h3>
+                        <p class="product-description">Carne suave, cebolla y especias.</p>
+                        <p class="product-price">$8,000 ARS</p>
+                        <button class="add-to-cart-btn" data-id="plato2" data-name="Empanadas (docena)" data-price="8000">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <div class="product-card searchable-item" id="plato3" data-food-category="ensaladas">
+                    <div class="product-image">
+                        <img src="Imagenes/Xbox-01-copia-1024x1024.png" alt="Ensalada César" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Ensalada César</h3>
+                        <p class="product-description">Lechuga, crutones, parmesano y aderezo clásico.</p>
+                        <p class="product-price">$5,200 ARS</p>
+                        <button class="add-to-cart-btn" data-id="plato3" data-name="Ensalada César" data-price="5200">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <div class="product-card searchable-item" id="plato4" data-food-category="bebidas">
+                    <div class="product-image">
+                        <img src="Imagenes/Xbox-01-copia-1024x1024.png" alt="Limonada Casera" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Limonada Casera</h3>
+                        <p class="product-description">Refrescante, con limón, azúcar y menta.</p>
+                        <p class="product-price">$2,500 ARS</p>
+                        <button class="add-to-cart-btn" data-id="plato4" data-name="Limonada Casera" data-price="2500">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <div class="product-card searchable-item" id="plato5" data-food-category="cocteles">
+                    <div class="product-image">
+                        <img src="Imagenes/Xbox-01-copia-1024x1024.png" alt="Cóctel Mojito" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Cóctel Mojito</h3>
+                        <p class="product-description">Ron, lima, menta y soda. Clásico imperdible.</p>
+                        <p class="product-price">$4,500 ARS</p>
+                        <button class="add-to-cart-btn" data-id="plato5" data-name="Cóctel Mojito" data-price="4500">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <div class="product-card searchable-item" id="plato6" data-food-category="postres">
+                    <div class="product-image">
+                        <img src="Imagenes/Xbox-01-copia-1024x1024.png" alt="Brownie con Helado" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Brownie con Helado</h3>
+                        <p class="product-description">Brownie tibio con una bola de helado de vainilla.</p>
+                        <p class="product-price">$3,200 ARS</p>
+                        <button class="add-to-cart-btn" data-id="plato6" data-name="Brownie con Helado" data-price="3200">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Productos de ejemplo por interés (justo debajo del menú de gastronomía) -->
+        <section class="products interest-products searchable-section">
+            <h2 id="interest-products-index-title" class="section-title">Recomendados por interés</h2>
+            <div class="products-grid">
+                <!-- 2x1 -->
+                <div class="product-card searchable-item" id="interest-product-2x1">
+                    <div class="interest-badge">2x1</div>
+                    <div class="product-image">
+                        <img src="Imagenes/xbox.png" alt="Pizza Margarita 2x1" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Pizza Margarita 2x1</h3>
+                        <p class="product-description">Promo 2x1 en pizzas Margarita; ideal para compartir.</p>
+                        <p class="product-price">$4,500 ARS</p>
+                        <button class="add-to-cart-btn" data-id="i1" data-name="Pizza Margarita 2x1" data-price="4500">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Liquidaciones -->
+                <div class="product-card searchable-item" id="interest-product-liquidaciones">
+                    <div class="interest-badge">Promoción</div>
+                    <div class="product-image">
+                        <img src="Imagenes/asus-proart-p16.png" alt="Empanadas de Carne (Promo)" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Empanadas de Carne (Promo)</h3>
+                        <p class="product-description">Docena de empanadas a precio promocional.</p>
+                        <p class="product-price">$6,200 ARS</p>
+                        <button class="add-to-cart-btn" data-id="i2" data-name="Empanadas de Carne (Promo)" data-price="6200">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Destacados -->
+                <div class="product-card searchable-item" id="interest-product-destacados">
+                    <div class="interest-badge">Especialidad</div>
+                    <div class="product-image">
+                        <img src="Imagenes/Xbox-01-copia-1024x1024.png" alt="Lomo a lo Pobre (Especialidad)" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Lomo a lo Pobre (Especialidad)</h3>
+                        <p class="product-description">Clásico de la casa con huevo, cebolla y papas.</p>
+                        <p class="product-price">$7,800 ARS</p>
+                        <button class="add-to-cart-btn" data-id="i3" data-name="Lomo a lo Pobre (Especialidad)" data-price="7800">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Recién llegados -->
+                <div class="product-card searchable-item" id="interest-product-nuevo">
+                    <div class="interest-badge">Entradas</div>
+                    <div class="product-image">
+                        <img src="Imagenes/images.jfif" alt="Papas Bravas" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Papas Bravas</h3>
+                        <p class="product-description">Entradas con salsa picante y alioli.</p>
+                        <p class="product-price">$3,200 ARS</p>
+                        <button class="add-to-cart-btn" data-id="i4" data-name="Papas Bravas" data-price="3200">Añadir al carrito</button>
+                    </div>
+                </div>
+
+                <!-- Más vendidos -->
+                <div class="product-card searchable-item" id="interest-product-mas-vendidos">
+                    <div class="interest-badge">Combo</div>
+                    <div class="product-image">
+                        <img src="Imagenes/descarga.jfif" alt="Combo Burger + Papas + Bebida" width="800" height="600" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3>Combo Burger + Papas + Bebida</h3>
+                        <p class="product-description">Hamburguesa clásica con papas y bebida.</p>
+                        <p class="product-price">$5,900 ARS</p>
+                        <button class="add-to-cart-btn" data-id="i5" data-name="Combo Burger + Papas + Bebida" data-price="5900">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content searchable-section">
+            <h2 id="store-info-gastronomia-title" class="section-title">Información del Restaurante</h2>
+            <div class="content-items">
+                <article id="articulo1" class="searchable-item">
+                    <h3>Sobre Nosotros</h3>
+                    <p>Somos un restaurante especializado en gastronomía de alta calidad. Ofrecemos platos tradicionales y modernos preparados con ingredientes frescos y seleccionados.</p>
+                    <p>Nuestro compromiso es brindar la mejor experiencia gastronómica a nuestros comensales.</p>
+                </article>
+
+                <article id="articulo2" class="searchable-item">
+                    <h3>Política de Delivery</h3>
+                    <p>Realizamos entregas a domicilio en toda la ciudad. Los pedidos se preparan frescos y el tiempo de entrega es de 30-45 minutos dependiendo de tu ubicación.</p>
+                    <p>Ofrecemos delivery gratuito en pedidos superiores a $8,000.</p>
+                </article>
+
+                <article id="articulo3" class="searchable-item">
+                    <h3>Reservas y Cancelaciones</h3>
+                    <p>Aceptamos reservas para mesas y eventos especiales. Las cancelaciones deben realizarse con al menos 2 horas de anticipación.</p>
+                    <p>Para realizar una reserva o consultar disponibilidad, contacta con nuestro servicio de atención al cliente.</p>
+                </article>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>🍽️ Epa! Gastronomía</h4>
+                <p>Tu lugar de confianza para sabores auténticos y platos de calidad.</p>
+            </div>
+            <div class="footer-section">
+                <h4>📞 Contacto Rápido</h4>
+                <p><i class="fab fa-whatsapp"></i> WhatsApp: +54 9 261 586-3590</p>
+                <p><i class="fas fa-envelope"></i> info@epatienda.com</p>
+            </div>
+            <div class="footer-section">
+                <h4>📍 Ubicación</h4>
+                <p>Av. San Martín 1234, Mendoza</p>
+                <p>Lun-Dom: 12:00-23:00</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Epa! Gastronomía. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Modal de producto (compatible con scrip.js) -->
+    <div id="product-modal" style="display: none;" aria-hidden="true" role="dialog">
+      <div class="modal-content">
+        <button class="close-modal" aria-label="Cerrar modal"><i class="fas fa-times"></i></button>
+        <div class="modal-body">
+          <div class="modal-media">
+            <img id="modal-product-image" alt="Imagen del producto">
+          </div>
+          <div class="modal-info">
+            <h3 id="modal-product-title"></h3>
+            <p id="modal-product-description"></p>
+            <ul id="modal-product-features"></ul>
+            <div class="modal-price" id="modal-product-price"></div>
+            <button id="modal-add-to-cart-btn" class="add-to-cart-btn">Añadir al carrito</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón flotante para volver a Platos destacados -->
+    <button id="back-to-featured-float" class="back-to-top-float" aria-label="Volver a Platos destacados" title="Volver a Platos destacados" style="left: 16px; right: auto;">
+        <i class="fas fa-arrow-up" aria-hidden="true"></i>
+    </button>
+
+    <script src="scrip.js?v=53"></script>
+</body>
+</html>
